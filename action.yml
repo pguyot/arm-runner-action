@@ -1,0 +1,66 @@
+name: 'ARM runner'
+description: 'Composite action to run commands within a qemu chrooted environment'
+inputs:
+  base_image:
+    description: 'System base image'
+    required: true
+    default: 'raspios_lite:2021-03-04'
+  image_additional_mb:
+    description: 'Additional MB for image'
+    required: false
+    default: 0
+  cpu:
+    description: 'CPU architecture, arm1176 for arm6vl (Pi Zero)'
+    required: true
+    default: 'arm1176'
+  commands:
+    description: 'Commands to run in image, executed with /bin/sh'
+    required: true
+    default: 'uname -a'
+  copy_artifact_path:
+    description: 'Path of artifacts to copy, within the image'
+    required: false
+  copy_artifact_dest:
+    description: 'Where to copy artifacts'
+    required: false
+    defaut: '.'
+runs:
+  using: "composite"
+  steps:
+    - name: Install dependencies
+      run:
+        sudo apt-get install -y qemu qemu-user-static binfmt-support parted wget dosfstools zip
+      shell: bash
+    - name: Download base image
+      run: |
+        bash ${{ github.action_path }}/download_image.sh ${{ inputs.base_image }}
+      shell: bash
+      id: download_image
+    - name: Mount and optionally resize image
+      run: |
+        sudo bash ${{ github.action_path }}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }}
+      shell: bash
+      id: mount_image
+    - name: Run commands
+      run: |
+        repository_name=`basename ${{ github.workspace }}`
+        sudo cp -Rp ${{ github.workspace }} ${{ steps.mount_image.outputs.mount }}/${repository_name}
+        sudo touch ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        sudo chmod o+wx ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        echo "#!/bin/sh" > ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        echo "set -e" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        echo "cd /${repository_name}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        cat >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh <<"ARM_RUNNER_INPUT_COMMANDS_EOF"
+        ${{ inputs.commands }}
+        ARM_RUNNER_INPUT_COMMANDS_EOF
+        sudo QEMU_CPU=${{ inputs.cpu }} chroot ${{ steps.mount_image.outputs.mount }} /tmp/commands.sh
+      shell: bash
+    - name: Copy artifacts within image
+      run: |
+        repository_name=`basename ${{ github.workspace }}`
+        [ "${{ inputs.copy_artifact_path }}x" != "x" ] && [ "${{ inputs.copy_artifact_dest }}x" != "x" ] && sudo cp -Rp ${{ steps.mount_image.outputs.mount }}/${repository_name}/${{ inputs.copy_artifact_path }} ${{ inputs.copy_artifact_dest }}
+      shell: bash
+    - name: Cleanup image
+      run: |
+        sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }}
+      shell: bash
