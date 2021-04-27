@@ -58,7 +58,9 @@ runs:
     - name: Copy artifacts within image
       run: |
         repository_name=`basename ${{ github.workspace }}`
-        [ "${{ inputs.copy_artifact_path }}x" != "x" ] && [ "${{ inputs.copy_artifact_dest }}x" != "x" ] && sudo cp -Rp ${{ steps.mount_image.outputs.mount }}/${repository_name}/${{ inputs.copy_artifact_path }} ${{ inputs.copy_artifact_dest }}
+        if [ "${{ inputs.copy_artifact_path }}x" != "x" ] && [ "${{ inputs.copy_artifact_dest }}x" != "x" ]; then
+            sudo cp -Rp ${{ steps.mount_image.outputs.mount }}/${repository_name}/${{ inputs.copy_artifact_path }} ${{ inputs.copy_artifact_dest }}
+        fi
       shell: bash
     - name: Cleanup image
       run: |
