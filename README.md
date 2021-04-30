@@ -38,6 +38,7 @@ Enlarge the image by this number of MB. Default is to not enlarge the image.
 
 CPU to pass to qemu.
 Default value is `arm1176` which translates to arm6vl, suitable for Pi Zero.
+Other values include `cortex-a8` which translates to arm7vl.
 
 #### `copy_artifact_path`
 
@@ -54,3 +55,14 @@ Destination path to copy outside the image. Relative to the working directory
 #### `image`
 
 Path to the image, useful after the step to upload the image as an artifact.
+
+## Examples
+
+Real world examples include:
+- [pguyot/wm8960](https://github.com/pguyot/wm8960/blob/master/.github/workflows/arm-runner.yml) : compilation and tests
+- [nabaztag2018/pynab](https://github.com/pguyot/wm8960/blob/master/.github/workflows/arm-runner.yml) : compilation, tests and disk image.
+
+## Releases
+
+Releases are listed on [dedicated page](https://github.com/pguyot/arm-runner-action/releases).
+Release numbers follow semantic versionning : incompatible changes in invocation will be reflected with major release upgrades.
