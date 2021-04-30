@@ -72,3 +72,6 @@ runs:
       run: |
         sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }}
       shell: bash
+branding:
+  icon: 'cpu'
+  color: 'purple'
