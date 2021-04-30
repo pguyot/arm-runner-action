@@ -34,7 +34,7 @@ runs:
     - name: Install qemu wrapper
       run: |
         sudo mv /usr/bin/qemu-arm-static /usr/bin/qemu-arm-static0
-        sudo gcc -static qemu-wrapper.c -DQEMU_CPU=${{ inputs.cpu }} -O3 -s -o /usr/bin/qemu-arm-static
+        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${{ inputs.cpu }} -O3 -s -o /usr/bin/qemu-arm-static
         sudo update-binfmts --disable qemu-arm
         sudo update-binfmts --enable qemu-arm
       shell: bash

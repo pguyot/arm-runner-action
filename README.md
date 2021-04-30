@@ -60,7 +60,7 @@ Path to the image, useful after the step to upload the image as an artifact.
 
 Real world examples include:
 - [pguyot/wm8960](https://github.com/pguyot/wm8960/blob/master/.github/workflows/arm-runner.yml) : compilation and tests
-- [nabaztag2018/pynab](https://github.com/pguyot/wm8960/blob/master/.github/workflows/arm-runner.yml) : compilation, tests and disk image.
+- [nabaztag2018/pynab](https://github.com/nabaztag2018/pynab/blob/master/.github/workflows/arm-runner.yml) : compilation, tests and disk image.
 
 ## Releases
 
