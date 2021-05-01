@@ -24,6 +24,10 @@ inputs:
     description: 'Where to copy artifacts'
     required: false
     defaut: '.'
+  use_systemd_nspawn:
+    description: 'Use systemd-nspawn instead of chroot'
+    required: false
+    defaut: 'no'
 runs:
   using: "composite"
   steps:
@@ -61,7 +65,12 @@ runs:
         cat >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh <<"ARM_RUNNER_INPUT_COMMANDS_EOF"
         ${{ inputs.commands }}
         ARM_RUNNER_INPUT_COMMANDS_EOF
-        sudo chroot ${{ steps.mount_image.outputs.mount }} /tmp/commands.sh
+        if [ "${{ inputs.use_systemd_nspawn }}x" != "x" -a "${{ inputs.use_systemd_nspawn }}x" != "nox" ]; then
+            sudo apt-get install -y systemd-container
+            sudo systemd-nspawn -D ${{ steps.mount_image.outputs.mount }} /tmp/commands.sh
+        else
+            sudo chroot ${{ steps.mount_image.outputs.mount }} /tmp/commands.sh
+        fi
       shell: bash
     - name: Copy artifacts within image
       run: |
