@@ -90,7 +90,7 @@ within the image. Globs are allowed. Default is not to copy.
 Destination path to copy outside the image. Relative to the working directory
 (outside the image). Defaults to `.`
 
-#### `repository_path`
+#### `copy_repository_path`
 
 Absolute path, inside the image, where the repository is copied. Defaults
 to `/<repository_name>`. It is also the working directory where commands are
