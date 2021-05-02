@@ -28,6 +28,10 @@ inputs:
     description: 'Use systemd-nspawn instead of chroot'
     required: false
     defaut: 'no'
+outputs:
+  image:
+    description: "Path to image"
+    value: ${{ steps.download_image.outputs.image }}
 runs:
   using: "composite"
   steps:
