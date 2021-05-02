@@ -24,6 +24,10 @@ inputs:
     description: 'Where to copy artifacts'
     required: false
     defaut: '.'
+  copy_repository_path:
+    description: 'Where to copy repository path'
+    required: false
+    default: ''
   use_systemd_nspawn:
     description: 'Use systemd-nspawn instead of chroot'
     required: false
@@ -59,13 +63,17 @@ runs:
     - name: Run commands
       run: |
         set -x
-        repository_name=`basename ${{ github.workspace }}`
-        sudo cp -Rp ${{ github.workspace }} ${{ steps.mount_image.outputs.mount }}/${repository_name}
+        repository_path=${{ inputs.copy_repository_path }}
+        if [ "${repository_path}x" = "x" ]; then
+            repository_name=`basename ${{ github.workspace }}`
+            repository_path=/${repository_name}
+        fi
+        sudo cp -Rp ${{ github.workspace }} ${{ steps.mount_image.outputs.mount }}${repository_path}
         sudo touch ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         sudo chmod o+wx ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         echo "#!/bin/sh" > ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         echo "set -e" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
-        echo "cd /${repository_name}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        echo "cd ${repository_path}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         cat >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh <<"ARM_RUNNER_INPUT_COMMANDS_EOF"
         ${{ inputs.commands }}
         ARM_RUNNER_INPUT_COMMANDS_EOF
@@ -78,9 +86,13 @@ runs:
       shell: bash
     - name: Copy artifacts within image
       run: |
-        repository_name=`basename ${{ github.workspace }}`
+        repository_path=${{ inputs.copy_repository_path }}
+        if [ "${repository_path}x" = "x" ]; then
+            repository_name=`basename ${{ github.workspace }}`
+            repository_path=/${repository_name}
+        fi
         if [ "${{ inputs.copy_artifact_path }}x" != "x" ] && [ "${{ inputs.copy_artifact_dest }}x" != "x" ]; then
-            sudo cp -Rp ${{ steps.mount_image.outputs.mount }}/${repository_name}/${{ inputs.copy_artifact_path }} ${{ inputs.copy_artifact_dest }}
+            sudo cp -Rp ${{ steps.mount_image.outputs.mount }}${repository_path}/${{ inputs.copy_artifact_path }} ${{ inputs.copy_artifact_dest }}
         fi
       shell: bash
     - name: Cleanup image
