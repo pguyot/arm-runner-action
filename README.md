@@ -66,7 +66,9 @@ Base image to use.
 
 The following values are allowed:
 - `raspbian_lite:2020-02-13`
-- `raspios_lite:2021-03-04` (default)
+- `raspios_lite:2021-03-04`
+- `raspios_lite:2021-05-07` (default)
+- `dietpi:rpi_armv6_buster`
 
 More images will be added, eventually. Feel free to submit PRs.
 

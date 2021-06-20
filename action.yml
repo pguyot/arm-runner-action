@@ -4,7 +4,7 @@ inputs:
   base_image:
     description: 'System base image'
     required: true
-    default: 'raspios_lite:2021-03-04'
+    default: 'raspios_lite:2021-05-07'
   image_additional_mb:
     description: 'Additional MB for image'
     required: false
@@ -68,11 +68,12 @@ runs:
             repository_name=`basename ${{ github.workspace }}`
             repository_path=/${repository_name}
         fi
+        sudo mkdir -p $(dirname ${{ steps.mount_image.outputs.mount }}${repository_path})
         sudo cp -Rp ${{ github.workspace }} ${{ steps.mount_image.outputs.mount }}${repository_path}
         sudo touch ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         sudo chmod o+wx ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         echo "#!/bin/sh" > ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
-        echo "set -e" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        echo "set -ex" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         echo "cd ${repository_path}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         cat >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh <<"ARM_RUNNER_INPUT_COMMANDS_EOF"
         ${{ inputs.commands }}
