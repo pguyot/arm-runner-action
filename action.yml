@@ -29,7 +29,7 @@ inputs:
     required: false
     default: ''
   optimize_image:
-    description: 'Zero-fill unused filesystem blocks during final cleanup'
+    description: 'Optimize image during final cleanup'
     required: false
     default: 'yes'
   use_systemd_nspawn:
@@ -102,7 +102,7 @@ runs:
       shell: bash
     - name: Cleanup image
       run: |
-        sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} "${{ inputs.optimize_image }}"
+        sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} ${{ steps.download_image.outputs.image }} "${{ inputs.optimize_image }}"
       shell: bash
 branding:
   icon: 'cpu'

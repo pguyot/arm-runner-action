@@ -7,7 +7,7 @@ With this action, you can:
 - run tests in an environment closer to a real embedded system, using qemu
 userland linux emulation;
 - build artifacts in such environment and upload them;
-- prepare images that are ready to run on Raspberry-Pi and other arm embedded
+- prepare images that are ready to run on Raspberry Pi and other ARM embedded
 devices.
 
 ## Usage
@@ -81,8 +81,8 @@ Enlarge the image by this number of MB. Default is to not enlarge the image.
 #### `cpu`
 
 CPU to pass to qemu.
-Default value is `arm1176` which translates to arm6vl, suitable for Pi Zero.
-Other values include `cortex-a8` which translates to arm7vl.
+Default value is `arm1176` which translates to armv6l, suitable for Pi Zero.
+Other values include `cortex-a8` which translates to armv7l, suitable for Pi 3/Pi 4.
 
 #### `copy_artifact_path`
 
@@ -102,12 +102,12 @@ executed.
 
 #### `optimize_image`
 
-Zero-fill unused filesystem blocks during final cleanup, to make any later
-image compression more efficient. Default is to zero-fill.
+Zero-fill unused filesystem blocks and shrink root filesystem during final cleanup, to make any later
+image compression more efficient. Default is to optimize image.
 
 #### `use_systemd_nspawn`
 
-Use `systemd-nspanw` instead of chroot to run commands. Default is to use
+Use `systemd-nspawn` instead of chroot to run commands. Default is to use
 chroot.
 
 ### Outputs
