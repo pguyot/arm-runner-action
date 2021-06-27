@@ -21,7 +21,6 @@ Minimal usage is as follows:
         - uses: actions/checkout@v2
         - uses: pguyot/arm-runner-action@v1
           with:
-            optimize_image: no
             commands: |
                 commands to run tests
 
@@ -48,6 +47,8 @@ Typical usage to upload an image as an artifact:
           with:
             name: Release image
             path: my-release-image.img.xz
+
+Several scenarios are actually implemented as [tests](/.github/workflows).
 
 ### Commands
 

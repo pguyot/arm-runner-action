@@ -1,0 +1,52 @@
+name: Test optimize_image
+on: [push, pull_request]
+jobs:
+  optimized:
+    runs-on: ubuntu-latest
+    outputs:
+      imgsize: ${{ steps.compress.outputs.imgsize }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: pguyot/arm-runner-action@HEAD
+      id: optimized
+      with:
+        base_image: raspios_lite:2021-05-07
+        optimize_image: yes
+        commands: |
+            cat /dev/random > /rand || rm /rand
+    - name: Compress image
+      id: compress
+      run: |
+        mv ${{ steps.optimized.outputs.image }} /home/actions/temp/optimized-image.img
+        gzip /home/actions/temp/optimized-image.img
+        imgsize=`stat --printf="%s" /home/actions/temp/optimized-image.img.gz`
+        echo "::set-output name=imgsize::${imgsize}"
+  unoptimized:
+    runs-on: ubuntu-latest
+    outputs:
+      imgsize: ${{ steps.compress.outputs.imgsize }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: pguyot/arm-runner-action@HEAD
+      id: unoptimized
+      with:
+        base_image: raspios_lite:2021-05-07
+        optimize_image: no
+        commands: |
+            cat /dev/random > /rand || rm /rand
+    - name: Compress image
+      id: compress
+      run: |
+        mv ${{ steps.unoptimized.outputs.image }} /home/actions/temp/unoptimized-image.img
+        gzip /home/actions/temp/unoptimized-image.img
+        imgsize=`stat --printf="%s" /home/actions/temp/unoptimized-image.img.gz`
+        echo "::set-output name=imgsize::${imgsize}"
+  compare:
+    runs-on: ubuntu-latest
+    needs: [optimized, unoptimized]
+    steps:
+    - name: Test image sizes
+      run: |
+        echo "Optimized size: ${{needs.optimized.outputs.imgsize}}"
+        echo "Unoptimized size: ${{needs.unoptimized.outputs.imgsize}}"
+        test $(( ${{needs.unoptimized.outputs.imgsize}} - ${{needs.optimized.outputs.imgsize}} )) > 300000000
