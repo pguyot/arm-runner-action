@@ -1,0 +1,15 @@
+name: Test artifact copy
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: pguyot/arm-runner-action@HEAD
+      with:
+        copy_artifact_path: artifact
+        commands: |
+            touch artifact
+    - name: Test artifact was copied
+      run: |
+        test -f artifact

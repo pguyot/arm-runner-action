@@ -1,0 +1,13 @@
+name: Test cpu option
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: pguyot/arm-runner-action@HEAD
+      with:
+        cpu: cortex-a8
+        commands: |
+            echo "Minimal"
+            test `uname -m` = 'armv7l'

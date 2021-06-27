@@ -23,7 +23,7 @@ inputs:
   copy_artifact_dest:
     description: 'Where to copy artifacts'
     required: false
-    defaut: '.'
+    default: '.'
   copy_repository_path:
     description: 'Where to copy repository path'
     required: false
@@ -31,11 +31,11 @@ inputs:
   optimize_image:
     description: 'Zero-fill unused filesystem blocks during final cleanup'
     required: false
-    defaut: 'yes'
+    default: 'yes'
   use_systemd_nspawn:
     description: 'Use systemd-nspawn instead of chroot'
     required: false
-    defaut: 'no'
+    default: 'no'
 outputs:
   image:
     description: "Path to image"
