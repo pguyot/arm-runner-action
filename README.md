@@ -21,6 +21,7 @@ Minimal usage is as follows:
         - uses: actions/checkout@v2
         - uses: pguyot/arm-runner-action@v1
           with:
+            optimize_image: no
             commands: |
                 commands to run tests
 
@@ -97,6 +98,11 @@ Destination path to copy outside the image. Relative to the working directory
 Absolute path, inside the image, where the repository is copied. Defaults
 to `/<repository_name>`. It is also the working directory where commands are
 executed.
+
+#### `optimize_image`
+
+Zero-fill unused filesystem blocks during final cleanup, to make any later
+image compression more efficient. Default is to zero-fill.
 
 #### `use_systemd_nspawn`
 

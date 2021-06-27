@@ -28,6 +28,10 @@ inputs:
     description: 'Where to copy repository path'
     required: false
     default: ''
+  optimize_image:
+    description: 'Zero-fill unused filesystem blocks during final cleanup'
+    required: false
+    defaut: 'yes'
   use_systemd_nspawn:
     description: 'Use systemd-nspawn instead of chroot'
     required: false
@@ -98,7 +102,7 @@ runs:
       shell: bash
     - name: Cleanup image
       run: |
-        sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }}
+        sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} "${{ inputs.optimize_image }}"
       shell: bash
 branding:
   icon: 'cpu'
