@@ -1,0 +1,37 @@
+name: Test shell setting & parameters
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: twojstaryzdomu/arm-runner-action@HEAD
+      with:
+        shell: ksh
+        commands: |
+          case `readlink /proc/$$/exe` in
+          *ksh)
+            :
+          *)
+            false
+          fi
+    - uses: twojstaryzdomu/arm-runner-action@HEAD
+      with:
+        shell: ksh
+        exit_on_fail: false
+        commands: |
+          false
+          exit 1
+    - uses: twojstaryzdomu/arm-runner-action@HEAD
+      with:
+        shell: ksh93
+        shell_package: ksh
+        exit_on_fail: false
+        commands: |
+          dpkg -l ksh | grep ^ii
+          case `readlink /proc/$$/exe` in
+          ksh93)
+            :
+          *)
+            false
+          fi
