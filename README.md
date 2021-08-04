@@ -97,15 +97,13 @@ Set to 'no' or 'false' to disable exiting on command failure.
 
 #### `copy_artifact_path`
 
-Source paths(s) inside the image to copy outside after the commands have
-executed. Relative to the `/<repository_name>` directory or the directory
-defined with `copy_repolity_path`. Globs are allowed. To copy multiple paths,
-provide a list of paths, separated by semi-colons. Default is not to copy.
+Source path to copy outside the image. Relative to the working directory,
+within the image. Globs are allowed. Default is not to copy.
 
 #### `copy_artifact_dest`
 
-Destination path to copy outside the image after the commands have executed.
-Relative to the working directory (outside the image). Defaults to `.`
+Destination path to copy outside the image. Relative to the working directory
+(outside the image). Defaults to `.`
 
 #### `copy_repository_path`
 
