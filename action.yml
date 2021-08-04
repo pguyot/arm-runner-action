@@ -26,10 +26,10 @@ inputs:
     required: false
     default: 'yes'
   copy_artifact_path:
-    description: 'Path of artifacts to copy, within the image'
+    description: 'Paths of artifacts to copy from inside the image on completion'
     required: false
   copy_artifact_dest:
-    description: 'Where to copy artifacts'
+    description: 'Where to copy artifacts on completion'
     required: false
     default: '.'
   copy_repository_path:
@@ -128,7 +128,10 @@ runs:
             repository_path=/${repository_name}
         fi
         if [ "${{ inputs.copy_artifact_path }}x" != "x" ] && [ "${{ inputs.copy_artifact_dest }}x" != "x" ]; then
-            sudo cp -Rp ${{ steps.mount_image.outputs.mount }}${repository_path}/${{ inputs.copy_artifact_path }} ${{ inputs.copy_artifact_dest }}
+            while read -d\; copy_artifact_path; do
+                [ -z "${copy_artifact_path}" ] || \
+                sudo cp -Rp ${{ steps.mount_image.outputs.mount }}${repository_path}/${copy_artifact_path} ${{ inputs.copy_artifact_dest }}
+            done <<< "${{ inputs.copy_artifact_path }};"
         fi
       shell: bash
     - name: Cleanup image
