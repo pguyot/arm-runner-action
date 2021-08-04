@@ -84,6 +84,10 @@ CPU to pass to qemu.
 Default value is `arm1176` which translates to arm6vl, suitable for Pi Zero.
 Other values include `cortex-a8` which translates to arm7vl.
 
+#### `shell`
+
+Path to shell to run the commands in. Defaults to /bin/sh.
+
 #### `copy_artifact_path`
 
 Source path to copy outside the image. Relative to the working directory,
