@@ -21,6 +21,10 @@ inputs:
     description: 'Commands to run in the image, executed by the shell'
     required: true
     default: 'uname -a'
+  exit_on_fail:
+    description: 'Exit immediately if a command exits with a non-zero status'
+    required: false
+    default: 'yes'
   copy_artifact_path:
     description: 'Path of artifacts to copy, within the image'
     required: false
@@ -76,12 +80,19 @@ runs:
             repository_name=`basename ${{ github.workspace }}`
             repository_path=/${repository_name}
         fi
+        case "${{ inputs.exit_on_fail }}" in
+        yes|true)
+            exit_on_fail='e'
+        no|false)
+            exit_on_fail=''
+        ;;
+        esac
         sudo mkdir -p $(dirname ${{ steps.mount_image.outputs.mount }}${repository_path})
         sudo cp -Rp ${{ github.workspace }} ${{ steps.mount_image.outputs.mount }}${repository_path}
         sudo touch ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         sudo chmod o+wx ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         echo "#!${{ inputs.shell }}" > ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
-        echo "set -ex" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        echo "set -${exit_on_fail}x" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         echo "cd ${repository_path}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         cat >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh <<"ARM_RUNNER_INPUT_COMMANDS_EOF"
         ${{ inputs.commands }}

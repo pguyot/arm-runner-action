@@ -88,6 +88,11 @@ Other values include `cortex-a8` which translates to arm7vl.
 
 Path to shell to run the commands in. Defaults to /bin/sh.
 
+#### `exit_on_fail`
+
+Exit immediately if a command exits with a non-zero status. Default is to exit.
+Set to 'no' or 'false' to disable exiting on command failure.
+
 #### `copy_artifact_path`
 
 Source path to copy outside the image. Relative to the working directory,
