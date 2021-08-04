@@ -87,6 +87,7 @@ runs:
         case "${{ inputs.exit_on_fail }}" in
         yes|true)
             exit_on_fail='e'
+        ;;
         no|false)
             exit_on_fail=''
         ;;
