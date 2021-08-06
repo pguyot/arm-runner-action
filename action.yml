@@ -44,6 +44,10 @@ inputs:
     description: 'The shell package to install, if different from shell'
     required: false
     default: ''
+  exit_on_fail:
+    description: 'Exit immediately if a command exits with a non-zero status'
+    required: false
+    default: 'yes'
 outputs:
   image:
     description: "Path to image"
@@ -80,6 +84,14 @@ runs:
             repository_name=`basename ${{ github.workspace }}`
             repository_path=/${repository_name}
         fi
+        case "${{ inputs.exit_on_fail }}" in
+        yes|true)
+            exit_on_fail='e'
+        ;;
+        no|false)
+            exit_on_fail=''
+        ;;
+        esac
         shell=${{ inputs.shell }}
         shell_package=${{ inputs.shell_package }}
         [ -x ${{ steps.mount_image.outputs.mount }}/${shell} ] || \
@@ -98,7 +110,7 @@ runs:
         sudo touch ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         sudo chmod o+wx ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         echo "#!${shell_path}" > ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
-        echo "set -ex" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        echo "set -e${exit_on_fail}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         echo "cd ${repository_path}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         cat >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh <<"ARM_RUNNER_INPUT_COMMANDS_EOF"
         ${{ inputs.commands }}

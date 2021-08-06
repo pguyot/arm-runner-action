@@ -125,6 +125,11 @@ with some shells that come packaged under a different package name.
 For example, to use `ksh93` as shell, set `shell` to `ksh93` and
 `shell_package` to `ksh`.
 
+#### `exit_on_fail`
+
+Exit immediately if a command exits with a non-zero status. Default is to exit.
+Set to `no` or `false` to disable exiting on command failure.
+
 ### Outputs
 
 #### `image`
