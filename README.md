@@ -110,6 +110,10 @@ image compression more efficient. Default is to zero-fill.
 Use `systemd-nspanw` instead of chroot to run commands. Default is to use
 chroot.
 
+#### `shell`
+
+Path to shell to run the commands in. Defaults to /bin/sh.
+
 ### Outputs
 
 #### `image`
