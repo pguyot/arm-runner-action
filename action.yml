@@ -48,6 +48,10 @@ inputs:
     description: 'Exit immediately if a command exits with a non-zero status'
     required: false
     default: 'yes'
+  debug:
+    description: 'Display commands as they are executed'
+    required: false
+    default: 'yes'
 outputs:
   image:
     description: "Path to image"
@@ -78,7 +82,15 @@ runs:
       id: mount_image
     - name: Run commands
       run: |
-        set -x
+        case "${{ inputs.debug }}" in
+        yes|true)
+            debug='x'
+            set -x
+        ;;
+        no|false)
+            debug=''
+        ;;
+        esac
         repository_path=${{ inputs.copy_repository_path }}
         if [ "${repository_path}x" = "x" ]; then
             repository_name=`basename ${{ github.workspace }}`
@@ -110,7 +122,7 @@ runs:
         sudo touch ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         sudo chmod o+wx ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         echo "#!${shell_path}" > ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
-        echo "set -e${exit_on_fail}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        echo "set -${debug}${exit_on_fail}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         echo "cd ${repository_path}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         cat >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh <<"ARM_RUNNER_INPUT_COMMANDS_EOF"
         ${{ inputs.commands }}
@@ -124,6 +136,11 @@ runs:
       shell: bash
     - name: Copy artifacts within image
       run: |
+        case "${{ inputs.debug }}" in
+        yes|true)
+            set -x
+        ;;
+        esac
         repository_path=${{ inputs.copy_repository_path }}
         if [ "${repository_path}x" = "x" ]; then
             repository_name=`basename ${{ github.workspace }}`
