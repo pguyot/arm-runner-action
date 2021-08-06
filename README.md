@@ -112,7 +112,18 @@ chroot.
 
 #### `shell`
 
-Path to shell to run the commands in. Defaults to /bin/sh.
+Path to shell or shell name to run the commands in. Defaults to /bin/sh.
+If missing, it will be installed. See `shell_package`.
+If defined as basename filename, it will be used as long as the shell binary
+exists under PATH after the package is installed.
+
+#### `shell_package`
+
+The shell package to install, if different from shell. It may be handy
+with some shells that come packaged under a different package name.
+
+For example, to use `ksh93` as shell, set `shell` to `ksh93` and
+`shell_package` to `ksh`.
 
 ### Outputs
 
