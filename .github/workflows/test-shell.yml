@@ -1,0 +1,13 @@
+name: Test shell
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: twojstaryzdomu/arm-runner-action@HEAD
+      with:
+        shell: ksh93
+        shell_package: ksh
+        exit_on_fail: false
+        commands: |
+          dpkg -l ksh | grep ^ii
