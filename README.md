@@ -136,6 +136,15 @@ Set to `no` or `false` to disable exiting on command failure.
 
 Display executed commands as they are executed. Enabled by default.
 
+#### `import_github_env`
+
+Imports variables written so far to `$GITHUB_ENV` to the image. Default is not
+to import any environment. This may be useful for sharing external variables with
+the virtual environment. Set to `yes` or `true` to enable.
+
+Practically, this setting allows constructs like `${VARIABLE_NAME}` instead of
+`${{ env.VARIABLE_NAME }}` within the command set.
+
 ### Outputs
 
 #### `image`
