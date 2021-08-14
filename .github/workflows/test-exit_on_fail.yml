@@ -1,0 +1,12 @@
+name: Test exit_on_fail
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: twojstaryzdomu/arm-runner-action@HEAD
+      with:
+        exit_on_fail: false
+        commands: |
+          false
+          exit 0
