@@ -1,0 +1,14 @@
+name: Test import_github_env with sh
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo "VARNAME=value" >> $GITHUB_ENV
+    - uses: twojstaryzdomu/arm-runner-action@HEAD
+      with:
+        shell: sh
+        import_github_env: true
+        commands: |
+          [ -n "${VARNAME}" ]
