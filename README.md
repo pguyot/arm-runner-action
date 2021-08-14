@@ -86,13 +86,15 @@ Other values include `cortex-a8` which translates to arm7vl.
 
 #### `copy_artifact_path`
 
-Source path to copy outside the image. Relative to the working directory,
-within the image. Globs are allowed. Default is not to copy.
+Source paths(s) inside the image to copy outside after the commands have
+executed. Relative to the `/<repository_name>` directory or the directory
+defined with `copy_repolity_path`. Globs are allowed. To copy multiple paths,
+provide a list of paths, separated by semi-colons. Default is not to copy.
 
 #### `copy_artifact_dest`
 
-Destination path to copy outside the image. Relative to the working directory
-(outside the image). Defaults to `.`
+Destination path to copy outside the image after the commands have executed.
+Relative to the working directory (outside the image). Defaults to `.`
 
 #### `copy_repository_path`
 
@@ -109,6 +111,49 @@ image compression more efficient. Default is to zero-fill.
 
 Use `systemd-nspanw` instead of chroot to run commands. Default is to use
 chroot.
+
+#### `shell`
+
+Path to shell or shell name to run the commands in. Defaults to /bin/sh.
+If missing, it will be installed. See `shell_package`.
+If defined as basename filename, it will be used as long as the shell binary
+exists under PATH after the package is installed.
+
+#### `shell_package`
+
+The shell package to install, if different from shell. It may be handy
+with some shells that come packaged under a different package name.
+
+For example, to use `ksh93` as shell, set `shell` to `ksh93` and
+`shell_package` to `ksh`.
+
+#### `exit_on_fail`
+
+Exit immediately if a command exits with a non-zero status. Default is to exit.
+Set to `no` or `false` to disable exiting on command failure.
+
+#### `debug`
+
+Display executed commands as they are executed. Enabled by default.
+
+#### `import_github_env`
+
+Imports variables written so far to `$GITHUB_ENV` to the image. Default is not
+to import any environment. This may be useful for sharing external variables with
+the virtual environment. Set to `yes` or `true` to enable.
+
+Practically, this setting allows constructs like `${VARIABLE_NAME}` instead of
+`${{ env.VARIABLE_NAME }}` within the command set.
+
+#### `export_github_env`
+
+Enables `$GITHUB_ENV` for commands in the image and exports its contents on
+completion to subsequent tasks. This option is an alternative to using a
+file-based artifact for passing the results of commands outside the image
+environment.
+
+Note this parameter does not enable importing any contents written to
+`$GITHUB_ENV` ahead of running the commands. For that, use `import_github_env`.
 
 ### Outputs
 
