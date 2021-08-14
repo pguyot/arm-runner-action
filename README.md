@@ -145,6 +145,16 @@ the virtual environment. Set to `yes` or `true` to enable.
 Practically, this setting allows constructs like `${VARIABLE_NAME}` instead of
 `${{ env.VARIABLE_NAME }}` within the command set.
 
+#### `export_github_env`
+
+Enables `$GITHUB_ENV` for commands in the image and exports its contents on
+completion to subsequent tasks. This option is an alternative to using a
+file-based artifact for passing the results of commands outside the image
+environment.
+
+Note this parameter does not enable importing any contents written to
+`$GITHUB_ENV` ahead of running the commands. For that, use `import_github_env`.
+
 ### Outputs
 
 #### `image`
