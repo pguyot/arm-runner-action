@@ -14,18 +14,18 @@ inputs:
     required: true
     default: 'arm1176'
   commands:
-    description: 'Commands to run in image, executed with /bin/sh'
+    description: 'Commands to run in the image, executed with /bin/sh'
     required: true
     default: 'uname -a'
   copy_artifact_path:
-    description: 'Path of artifacts to copy, within the image'
+    description: 'Paths of artifacts to copy from inside the image on completion'
     required: false
   copy_artifact_dest:
-    description: 'Where to copy artifacts'
+    description: 'Where to copy artifacts on completion'
     required: false
     default: '.'
   copy_repository_path:
-    description: 'Where to copy repository path'
+    description: 'Where to copy repository path before running commands'
     required: false
     default: ''
   optimize_image:
@@ -34,6 +34,30 @@ inputs:
     default: 'yes'
   use_systemd_nspawn:
     description: 'Use systemd-nspawn instead of chroot'
+    required: false
+    default: 'no'
+  shell:
+    description: 'Path to shell to run the commands with'
+    required: false
+    default: '/bin/sh'
+  shell_package:
+    description: 'The shell package to install, if different from shell'
+    required: false
+    default: ''
+  exit_on_fail:
+    description: 'Exit immediately if a command exits with a non-zero status'
+    required: false
+    default: 'yes'
+  debug:
+    description: 'Display commands as they are executed'
+    required: false
+    default: 'yes'
+  import_github_env:
+    description: 'Imports $GITHUB_ENV variables into the image environment'
+    required: false
+    default: 'no'
+  export_github_env:
+    description: 'Exports $GITHUB_ENV from the image environment to subsequent tasks'
     required: false
     default: 'no'
 outputs:
@@ -66,18 +90,58 @@ runs:
       id: mount_image
     - name: Run commands
       run: |
-        set -x
+        case "${{ inputs.debug }}" in
+        yes|true)
+            debug='x'
+            set -x
+        ;;
+        no|false)
+            debug=''
+        ;;
+        esac
         repository_path=${{ inputs.copy_repository_path }}
         if [ "${repository_path}x" = "x" ]; then
             repository_name=`basename ${{ github.workspace }}`
             repository_path=/${repository_name}
         fi
+        case "${{ inputs.exit_on_fail }}" in
+        yes|true)
+            exit_on_fail='e'
+        ;;
+        no|false)
+            exit_on_fail=''
+        ;;
+        esac
+        shell=${{ inputs.shell }}
+        shell_package=${{ inputs.shell_package }}
+        [ -x ${{ steps.mount_image.outputs.mount }}/${shell} ] || \
+        shell_path=$(sudo chroot ${{ steps.mount_image.outputs.mount }} which ${shell}) || \
+        case ${shell} in
+        bash|sh)
+            :
+        ;;
+        *)
+            sudo chroot ${{ steps.mount_image.outputs.mount }} sudo apt-get install -y ${shell_package:-${shell##*/}}
+        ;;
+        esac
+        shell_path=${shell_path:-$(sudo chroot ${{ steps.mount_image.outputs.mount }} which ${shell})}
         sudo mkdir -p $(dirname ${{ steps.mount_image.outputs.mount }}${repository_path})
         sudo cp -Rp ${{ github.workspace }} ${{ steps.mount_image.outputs.mount }}${repository_path}
         sudo touch ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         sudo chmod o+wx ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
-        echo "#!/bin/sh" > ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
-        echo "set -ex" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        echo "#!${shell_path}" > ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        echo "set -${debug}${exit_on_fail}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        case "${{ inputs.import_github_env }}" in
+        yes|true)
+            export | sed -e 's/^declare -x //g;s/^[^=]*$/\0=""/g;s/='\''\(.*\)'\''$/=\1/g' >> ${{ steps.mount_image.outputs.mount }}/tmp/environment.sh
+            echo '. ./tmp/environment.sh' >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        ;;
+        esac
+        case "${{ inputs.export_github_env }}" in
+        yes|true)
+            echo "GITHUB_ENV=/tmp/github_env.sh" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        ;;
+        esac
         echo "cd ${repository_path}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         cat >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh <<"ARM_RUNNER_INPUT_COMMANDS_EOF"
         ${{ inputs.commands }}
@@ -88,16 +152,27 @@ runs:
         else
             sudo chroot ${{ steps.mount_image.outputs.mount }} /tmp/commands.sh
         fi
+        rc=$?
+        [ -f ${{ steps.mount_image.outputs.mount }}/tmp/github_env.sh ] && \
+            cat ${{ steps.mount_image.outputs.mount }}/tmp/github_env.sh >> $GITHUB_ENV
+        exit $rc
       shell: bash
     - name: Copy artifacts within image
       run: |
+        case "${{ inputs.debug }}" in
+        yes|true)
+            set -x
+        ;;
+        esac
         repository_path=${{ inputs.copy_repository_path }}
         if [ "${repository_path}x" = "x" ]; then
             repository_name=`basename ${{ github.workspace }}`
             repository_path=/${repository_name}
         fi
         if [ "${{ inputs.copy_artifact_path }}x" != "x" ] && [ "${{ inputs.copy_artifact_dest }}x" != "x" ]; then
-            sudo cp -Rp ${{ steps.mount_image.outputs.mount }}${repository_path}/${{ inputs.copy_artifact_path }} ${{ inputs.copy_artifact_dest }}
+            while read -d\; copy_artifact_path; do
+                [ -z "${copy_artifact_path}" ] || sudo cp -Rp ${{ steps.mount_image.outputs.mount }}${repository_path}/${copy_artifact_path} ${{ inputs.copy_artifact_dest }}
+            done <<< "${{ inputs.copy_artifact_path }};"
         fi
       shell: bash
     - name: Cleanup image
