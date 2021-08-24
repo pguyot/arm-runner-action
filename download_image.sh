@@ -18,8 +18,8 @@ case $1 in
         url="$1"
     ;;
     *)
-    echo "Unknown image $1"
-    exit 1
+        echo "Unknown image $1"
+        exit 1
     ;;
 esac
 
