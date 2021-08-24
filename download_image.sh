@@ -30,6 +30,9 @@ case $url in
     *.7z)
         uncompress="7zr e"
     ;;
+    *.xz)
+        uncompress="xz -d"
+    ;;
 esac
 
 filename=`basename ${url}`
