@@ -6,7 +6,7 @@ jobs:
     steps:
     - run: |
         echo "VARNAME=value" >> $GITHUB_ENV
-    - uses: twojstaryzdomu/arm-runner-action@HEAD
+    - uses: pguyot/arm-runner-action@HEAD
       with:
         import_github_env: true
         commands: |
