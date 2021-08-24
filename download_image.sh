@@ -14,6 +14,9 @@ case $1 in
     "dietpi:rpi_armv6_buster")
         url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv6-Buster.7z
     ;;
+    https:/*|http:/*)
+        url="$1"
+    ;;
     *)
     echo "Unknown image $1"
     exit 1

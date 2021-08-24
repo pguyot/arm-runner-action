@@ -72,6 +72,8 @@ The following values are allowed:
 - `raspios_lite:2021-05-07` (default)
 - `dietpi:rpi_armv6_buster`
 
+The input parameter also accepts any custom URL beginning in http(s)://...
+
 More images will be added, eventually. Feel free to submit PRs.
 
 #### `image_additional_mb`
