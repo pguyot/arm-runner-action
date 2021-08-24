@@ -1,0 +1,13 @@
+name: Test custom url
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: twojstaryzdomu/arm-runner-action@HEAD
+      with:
+        base_image: https://raspi.debian.net/verified/20210823_raspi_1_bullseye.img.xz
+        commands: |
+          cat /etc/os-release
+          uname -a
