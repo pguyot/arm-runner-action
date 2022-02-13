@@ -22,6 +22,9 @@ case $1 in
     "raspios_lite:2021-10-30")
         url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-11-08/2021-10-30-raspios-bullseye-armhf-lite.zip
     ;;
+    "raspios_lite:2021-11-08")
+        url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-11-08/2021-10-30-raspios-bullseye-armhf-lite.zip
+    ;;
     "dietpi:rpi_armv6_bullseye")
         url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv6-Bullseye.7z
     ;;
