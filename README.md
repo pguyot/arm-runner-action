@@ -70,7 +70,8 @@ The following values are allowed:
 - `raspbian_lite:2020-02-13`
 - `raspios_lite:2021-03-04`
 - `raspios_lite:2021-05-07` (default)
-- `dietpi:rpi_armv6_buster`
+- `raspios_lite:2021-10-30`
+- `dietpi:rpi_armv6_bullseye`
 
 The input parameter also accepts any custom URL beginning in http(s)://...
 
@@ -90,7 +91,7 @@ Other values include `cortex-a8` which translates to armv7l, suitable for Pi 3/P
 
 Source paths(s) inside the image to copy outside after the commands have
 executed. Relative to the `/<repository_name>` directory or the directory
-defined with `copy_repolity_path`. Globs are allowed. To copy multiple paths,
+defined with `copy_repository_path`. Globs are allowed. To copy multiple paths,
 provide a list of paths, separated by semi-colons. Default is not to copy.
 
 #### `copy_artifact_dest`
