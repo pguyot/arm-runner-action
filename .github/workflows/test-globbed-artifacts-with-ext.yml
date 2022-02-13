@@ -1,0 +1,20 @@
+name: Test globbed artifacts with extension
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: pguyot/arm-runner-action@HEAD
+      with:
+        copy_artifact_path: "*.ext"
+        commands: |
+            touch artifact1.ext
+            touch artifact2.ext
+            touch artifact3
+            touch artifact4.ext2
+    - name: Test globbed artifacts with extension were copied
+      run: |
+        test -f artifact1.ext
+        test -f artifact2.ext
+    - name: Test non-globbed artifact was not copied
+      run: |
