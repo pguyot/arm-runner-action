@@ -73,8 +73,11 @@ The following values are allowed:
 - `raspbian_lite:latest`
 - `raspios_lite:2021-03-04`
 - `raspios_lite:2021-05-07`
+- `raspios_lite:2021-10-30`
 - `raspios_lite:latest` (default)
-- `dietpi:rpi_armv6_buster`
+- `dietpi:rpi_armv6_bullseye`
+
+The input parameter also accepts any custom URL beginning in http(s)://...
 
 More images will be added, eventually. Feel free to submit PRs.
 

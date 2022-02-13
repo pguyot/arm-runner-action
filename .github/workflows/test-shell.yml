@@ -1,13 +1,13 @@
-name: Test cpu option
+name: Test shell
 on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
     - uses: pguyot/arm-runner-action@HEAD
       with:
-        cpu: cortex-a8
+        shell: ksh93
+        shell_package: ksh
+        exit_on_fail: false
         commands: |
-            echo "Minimal"
-            test `uname -m` = 'armv7l'
+          dpkg -l ksh | grep ^ii
