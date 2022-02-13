@@ -20,7 +20,7 @@ Minimal usage is as follows:
         runs-on: ubuntu-latest
         steps:
         - uses: actions/checkout@v2
-        - uses: pguyot/arm-runner-action@v1
+        - uses: pguyot/arm-runner-action@v2
           with:
             commands: |
                 commands to run tests
@@ -32,9 +32,10 @@ Typical usage to upload an image as an artifact:
         runs-on: ubuntu-latest
         steps:
         - uses: actions/checkout@v2
-        - uses: pguyot/arm-runner-action@v1
+        - uses: pguyot/arm-runner-action@v2
           id: build_image
           with:
+            base_image: raspios_lite:2021-11-08
             commands: |
                 commands to build image
         - name: Compress the release image
@@ -65,7 +66,9 @@ Commands to execute. Written to a script within the image. Required.
 
 #### `base_image`
 
-Base image to use.
+Base image to use. By default, uses latest `raspio_lite` image. Please note
+that this is not necessarily well suited for continuous integration as
+the latest image can change with new releases.
 
 The following values are allowed:
 
@@ -74,7 +77,8 @@ The following values are allowed:
 - `raspios_lite:2021-03-04`
 - `raspios_lite:2021-05-07`
 - `raspios_lite:2021-10-30`
-- `raspios_lite:latest` (default)
+- `raspios_lite:2021-11-08`
+- `raspios_lite:latest` (armhf build, default)
 - `dietpi:rpi_armv6_bullseye`
 
 The input parameter also accepts any custom URL beginning in http(s)://...
