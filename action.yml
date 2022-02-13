@@ -74,9 +74,13 @@ runs:
     - name: Install qemu wrapper
       run: |
         sudo mv /usr/bin/qemu-arm-static /usr/bin/qemu-arm-static0
+        sudo mv /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static0
         sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${{ inputs.cpu }} -O3 -s -o /usr/bin/qemu-arm-static
+        sudo cp /usr/bin/qemu-arm-static /usr/bin/qemu-aarch64-static
         sudo update-binfmts --disable qemu-arm
+        sudo update-binfmts --disable qemu-aarch64
         sudo update-binfmts --enable qemu-arm
+        sudo update-binfmts --enable qemu-aarch64
       shell: bash
     - name: Download base image
       run: |

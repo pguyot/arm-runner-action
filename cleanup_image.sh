@@ -8,7 +8,9 @@ optimize=$4
 
 rm "${mount}/usr/bin/qemu-arm-static0"
 rm "${mount}/usr/bin/qemu-arm-static"
-mv "${mount}/etc/_ld.so.preload" "${mount}/etc/ld.so.preload"
+rm "${mount}/usr/bin/qemu-aarch64-static0"
+rm "${mount}/usr/bin/qemu-aarch64-static"
+[ -e "${mount}/etc/_ld.so.preload" ] && mv "${mount}/etc/_ld.so.preload" "${mount}/etc/ld.so.preload"
 mv "${mount}/etc/_resolv.conf" "${mount}/etc/resolv.conf"
 
 [[ -f "${mount}/tmp/commands.sh" ]] && rm "${mount}/tmp/commands.sh"

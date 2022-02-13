@@ -1,0 +1,25 @@
+name: Test architecture matrix
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [armv6l, armv7l, aarch64]
+        include:
+        - arch: armv6l
+          cpu: arm1176
+          base_image: raspios_lite:latest
+        - arch: armv7l
+          cpu: cortex-a7
+          base_image: raspios_lite:latest
+        - arch: aarch64
+          cpu: cortex-a53
+          base_image: raspios_lite_arm64:latest
+    steps:
+    - uses: pguyot/arm-runner-action@HEAD
+      with:
+        base_image: ${{ matrix.base_image }}
+        cpu: ${{ matrix.cpu }}
+        commands: |
+            test `uname -m` = ${{ matrix.arch }}

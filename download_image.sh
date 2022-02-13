@@ -10,6 +10,10 @@ case $1 in
         url=https://downloads.raspberrypi.org/raspios_lite_armhf_latest
         uncompress="unzip -u"
     ;;
+    "raspios_lite_arm64:latest")
+        url=https://downloads.raspberrypi.org/raspios_lite_arm64_latest
+        uncompress="unzip -u"
+    ;;
     "raspbian_lite:2020-02-13")
         url=https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2020-02-14/2020-02-13-raspbian-buster-lite.zip
     ;;
@@ -25,8 +29,29 @@ case $1 in
     "raspios_lite:2022-01-28")
         url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2022-01-28/2022-01-28-raspios-bullseye-armhf-lite.zip
     ;;
+    "raspios_lite_arm64:2022-01-28")
+        url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-01-28/2022-01-28-raspios-bullseye-arm64-lite.zip
+    ;;
     "dietpi:rpi_armv6_bullseye")
         url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv6-Bullseye.7z
+    ;;
+    "dietpi:rpi_armv7_bullseye")
+        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv7-Bullseye.7z
+    ;;
+    "dietpi:rpi_armv8_bullseye")
+        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv8-Bullseye.7z
+    ;;
+    "raspi_1_bullseye:20220121")
+        url=https://raspi.debian.net/tested/20220121_raspi_1_bullseye.img.xz
+    ;;
+    "raspi_2_bullseye:20220121")
+        url=https://raspi.debian.net/tested/20220121_raspi_2_bullseye.img.xz
+    ;;
+    "raspi_3_bullseye:20220121")
+        url=https://raspi.debian.net/tested/20220121_raspi_3_bullseye.img.xz
+    ;;
+    "raspi_4_bullseye:20220121")
+        url=https://raspi.debian.net/tested/20220121_raspi_4_bullseye.img.xz
     ;;
     https:/*|http:/*)
         url="$1"

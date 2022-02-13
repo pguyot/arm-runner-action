@@ -11,6 +11,8 @@ userland Linux emulation;
 - prepare images that are ready to run on Raspberry Pi and other ARM embedded
 devices.
 
+This action works with both 32 bits (arm) and 64 bits (aarch64) images.
+
 ## Usage
 
 Minimal usage is as follows:
@@ -35,7 +37,7 @@ Typical usage to upload an image as an artifact:
         - uses: pguyot/arm-runner-action@v2
           id: build_image
           with:
-            base_image: raspios_lite:2021-11-08
+            base_image: raspios_lite:2022-01-28
             commands: |
                 commands to build image
         - name: Compress the release image
@@ -78,8 +80,16 @@ The following values are allowed:
 - `raspios_lite:2021-05-07`
 - `raspios_lite:2021-10-30`
 - `raspios_lite:2022-01-28`
-- `raspios_lite:latest` (armhf build, default)
+- `raspios_lite:latest` (armhf build, *default*)
+- `raspios_lite_arm64:2022-01-28` (arm64, requires an ARMv8 CPU)
+- `raspios_lite_arm64:latest` (arm64, requires an ARMv8 CPU)
 - `dietpi:rpi_armv6_bullseye`
+- `dietpi:rpi_armv7_bullseye`
+- `dietpi:rpi_armv8_bullseye` (requires an ARMv8 CPU)
+- `raspi_1_bullseye:20220121` (armel)
+- `raspi_2_bullseye:20220121` (armhf)
+- `raspi_3_bullseye:20220121` (arm64, requires an ARMv8 CPU)
+- `raspi_4_bullseye:20220121` (arm64, requires an ARMv8 CPU)
 
 The input parameter also accepts any custom URL beginning in http(s)://...
 
@@ -92,8 +102,13 @@ Enlarge the image by this number of MB. Default is to not enlarge the image.
 #### `cpu`
 
 CPU to pass to qemu.
-Default value is `arm1176` which translates to armv6l, suitable for Pi Zero.
-Other values include `cortex-a8` which translates to armv7l, suitable for Pi 3/Pi 4.
+
+The following values are recommended:
+- `arm1176` (translates to armv6l, suitable for Pi Zero, default)
+- `cortex-a8` (translates to armv7l, suitable for Pi 3/Pi 4 and Pi Zero 2)
+- `cortex-a53` (translates to aarch64, suitable for 64 bits OSes).
+
+The CPU and the base image should match (see _32 and 64 bits_ below).
 
 #### `copy_artifact_path`
 
@@ -171,6 +186,49 @@ Note this parameter does not enable importing any contents written to
 #### `image`
 
 Path to the image, useful after the step to upload the image as an artifact.
+
+### 32 and 64 bits
+
+Many RaspberryPis and ARM boards are based on 64-bits chipsets than can run
+32 bits and 64 bits kernels. RaspberryPi OS, as well as other distributions,
+are now provided in 32 bits and 64 bits flavors.
+
+This action works for images built for 32 bits and 64 bits ARM architectures.
+Default input values imply 32 bits images. For 64 bits, the CPU and the
+base image should match.
+
+The following matrix will build on armv6l, armv7l and aarch64 using the latest
+RaspberryPi OS images.
+
+    name: Test architecture matrix
+    on: [push, pull_request, workflow_dispatch]
+    jobs:
+      build:
+        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            arch: [armv6l, armv7l, aarch64]
+            include:
+            - arch: armv6l
+              cpu: arm1176
+              base_image: raspios_lite:latest
+            - arch: armv7l
+              cpu: cortex-a7
+              base_image: raspios_lite:latest
+            - arch: aarch64
+              cpu: cortex-a53
+              base_image: raspios_lite_arm64:latest
+        steps:
+        - uses: pguyot/arm-runner-action@v2.1-dev
+          with:
+            base_image: ${{ matrix.base_image }}
+            cpu: ${{ matrix.cpu }}
+            commands: |
+                test `uname -m` = ${{ matrix.arch }}
+
+Internally, the `cpu` value is embedded in a wrapper for `qemu-arm-static` and
+`qemu-aarch64-static`. The actual qemu invoked depends on executables within
+the base image.
 
 ## Examples
 
