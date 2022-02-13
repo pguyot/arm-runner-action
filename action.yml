@@ -4,7 +4,7 @@ inputs:
   base_image:
     description: 'System base image'
     required: true
-    default: 'raspios_lite:2021-11-08'
+    default: 'raspios_lite:latest'
   image_additional_mb:
     description: 'Additional MB for image'
     required: false

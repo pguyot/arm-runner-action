@@ -4,8 +4,9 @@ Run tests natively and build images directly from GitHub Actions using a
 chroot-based virtualized Raspberry Pi (raspios/raspbian) environment.
 
 With this action, you can:
+
 - run tests in an environment closer to a real embedded system, using qemu
-userland linux emulation;
+userland Linux emulation;
 - build artifacts in such environment and upload them;
 - prepare images that are ready to run on Raspberry Pi and other ARM embedded
 devices.
@@ -67,10 +68,16 @@ Commands to execute. Written to a script within the image. Required.
 Base image to use.
 
 The following values are allowed:
+
 - `raspbian_lite:2020-02-13`
+- `raspbian_lite:latest`
 - `raspios_lite:2021-03-04`
-- `raspios_lite:2021-05-07` (default)
-- `dietpi:rpi_armv6_buster`
+- `raspios_lite:2021-05-07`
+- `raspios_lite:2021-10-30`
+- `raspios_lite:latest` (default)
+- `dietpi:rpi_armv6_bullseye`
+
+The input parameter also accepts any custom URL beginning in http(s)://...
 
 More images will be added, eventually. Feel free to submit PRs.
 
@@ -89,7 +96,7 @@ Other values include `cortex-a8` which translates to armv7l, suitable for Pi 3/P
 Source paths(s) inside the image to copy outside after the commands have
 executed. Relative to the `/<repository_name>` directory or the directory
 defined with `copy_repolity_path`. Globs are allowed. To copy multiple paths,
-provide a list of paths, separated by semi-colons. Default is not to copy.
+provide a list of paths, separated by semicolons. Default is not to copy.
 
 #### `copy_artifact_dest`
 
@@ -104,7 +111,7 @@ executed.
 
 #### `optimize_image`
 
-Zero-fill unused filesystem blocks and shrink root filesystem during final cleanup, to make any later
+Zero-fill unused filesystem blocks and shrink root filesystem during final clean-up, to make any later
 image compression more efficient. Default is to optimize image.
 
 #### `use_systemd_nspawn`
@@ -164,6 +171,7 @@ Path to the image, useful after the step to upload the image as an artifact.
 ## Examples
 
 Real world examples include:
+
 - [pguyot/wm8960](https://github.com/pguyot/wm8960/blob/master/.github/workflows/arm-runner.yml) : compilation and tests
 - [nabaztag2018/pynab](https://github.com/nabaztag2018/pynab/blob/master/.github/workflows/arm-runner.yml) : compilation, tests and disk image.
 
