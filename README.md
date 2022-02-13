@@ -73,6 +73,8 @@ The following values are allowed:
 - `raspios_lite:2021-10-30`
 - `dietpi:rpi_armv6_bullseye`
 
+The input parameter also accepts any custom URL beginning in http(s)://...
+
 More images will be added, eventually. Feel free to submit PRs.
 
 #### `image_additional_mb`

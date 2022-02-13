@@ -1,13 +1,13 @@
-name: Test cpu option
+name: Test import_github_env
 on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - run: |
+        echo "VARNAME=value" >> $GITHUB_ENV
     - uses: pguyot/arm-runner-action@HEAD
       with:
-        cpu: cortex-a8
+        import_github_env: true
         commands: |
-            echo "Minimal"
-            test `uname -m` = 'armv7l'
+          [ -n "${VARNAME}" ]

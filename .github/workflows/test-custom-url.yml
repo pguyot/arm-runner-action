@@ -1,4 +1,4 @@
-name: Test cpu option
+name: Test custom url
 on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
@@ -7,7 +7,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: pguyot/arm-runner-action@HEAD
       with:
-        cpu: cortex-a8
+        base_image: https://raspi.debian.net/verified/20210823_raspi_1_bullseye.img.xz
         commands: |
-            echo "Minimal"
-            test `uname -m` = 'armv7l'
+          cat /etc/os-release
+          uname -a
