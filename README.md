@@ -66,7 +66,7 @@ Commands to execute. Written to a script within the image. Required.
 
 #### `base_image`
 
-Base image to use. By default, uses latest `raspio_lite` image. Please note
+Base image to use. By default, uses latest `raspios_lite` image. Please note
 that this is not necessarily well suited for continuous integration as
 the latest image can change with new releases.
 
@@ -77,7 +77,7 @@ The following values are allowed:
 - `raspios_lite:2021-03-04`
 - `raspios_lite:2021-05-07`
 - `raspios_lite:2021-10-30`
-- `raspios_lite:2021-11-08`
+- `raspios_lite:2022-01-28`
 - `raspios_lite:latest` (armhf build, default)
 - `dietpi:rpi_armv6_bullseye`
 
