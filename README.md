@@ -124,9 +124,22 @@ Relative to the working directory (outside the image). Defaults to `.`
 
 #### `copy_repository_path`
 
-Absolute path, inside the image, where the repository is copied. Defaults
-to `/<repository_name>`. It is also the working directory where commands are
-executed.
+Absolute path, inside the image, where the repository is copied or mounted.
+Defaults to `/<repository_name>`. It is also the working directory where
+commands are executed.
+
+The repository is copied unless `bind_mount_repository` is set to true.
+
+#### `bind_mount_repository`
+
+Bind mount the repository within the image instead of copying it. Default is
+to copy files.
+
+If mounted, any modification of files within the repository by the target
+emulated system will persist after execution. It does not accelerate execution
+significantly but can simplify the logic by avoiding the copy artifact step
+from the target system.
+
 
 #### `optimize_image`
 

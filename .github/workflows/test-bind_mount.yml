@@ -1,0 +1,16 @@
+name: Test bind mount
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: pguyot/arm-runner-action@v2.2-dev
+      with:
+        bind_mount_repository: true
+        commands: |
+            uname -m > artifact
+    - name: Test created file persists
+      run: |
+        test -f artifact
+        test `cat artifact` = 'armv6l'

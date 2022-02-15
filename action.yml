@@ -9,6 +9,10 @@ inputs:
     description: 'Additional MB for image'
     required: false
     default: 0
+  bind_mount_repository:
+    description: 'Bind mount repository instead of copying it'
+    required: false
+    default: 'no'
   cpu:
     description: 'CPU architecture, arm1176 for arm6vl (Pi Zero)'
     required: true
@@ -130,7 +134,15 @@ runs:
         esac
         shell_path=${shell_path:-$(sudo chroot ${{ steps.mount_image.outputs.mount }} which ${shell})}
         sudo mkdir -p $(dirname ${{ steps.mount_image.outputs.mount }}${repository_path})
-        sudo cp -Rp ${{ github.workspace }} ${{ steps.mount_image.outputs.mount }}${repository_path}
+        case ${{ inputs.bind_mount_repository }} in
+        yes|true)
+            sudo mkdir -p ${{ steps.mount_image.outputs.mount }}${repository_path}
+            sudo mount --bind ${{ github.workspace }} ${{ steps.mount_image.outputs.mount }}${repository_path}
+        ;;
+        no|false)
+            sudo cp -Rp ${{ github.workspace }} ${{ steps.mount_image.outputs.mount }}${repository_path}
+        ;;
+        esac
         sudo touch ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         sudo chmod o+wx ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
         echo "#!${shell_path}" > ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
@@ -181,6 +193,16 @@ runs:
       shell: bash
     - name: Cleanup image
       run: |
+        case ${{ inputs.bind_mount_repository }} in
+        yes|true)
+            repository_path=${{ inputs.copy_repository_path }}
+            if [ "${repository_path}x" = "x" ]; then
+                repository_name=`basename ${{ github.workspace }}`
+                repository_path=/${repository_name}
+            fi
+            sudo umount ${{ steps.mount_image.outputs.mount }}${repository_path}
+        ;;
+        esac
         sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} ${{ steps.download_image.outputs.image }} "${{ inputs.optimize_image }}"
       shell: bash
 branding:
