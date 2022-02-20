@@ -17,6 +17,10 @@ inputs:
     description: 'CPU architecture, arm1176 for arm6vl (Pi Zero)'
     required: true
     default: 'arm1176'
+  cpu_info:
+    description: 'Path to cpu info file to be mounted on /proc/cpuinfo'
+    required: false
+    default: ''
   commands:
     description: 'Commands to run in the image, executed with /bin/sh'
     required: true
@@ -96,6 +100,16 @@ runs:
         sudo bash ${{ github.action_path }}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }}
       shell: bash
       id: mount_image
+    - name: Mount CPU info
+      if: ${{ inputs.cpu_info != '' }}
+      run: |
+        if [ -e ${{ github.workspace }}/${{ inputs.cpu_info }} ]; then
+          cpu_info_path=${{ github.workspace }}/${{ inputs.cpu_info }}
+        else
+          cpu_info_path=${{ github.action_path }}/${{ inputs.cpu_info }}
+        fi
+        sudo mount --bind ${cpu_info_path} ${{ steps.mount_image.outputs.mount }}/proc/cpuinfo
+      shell: bash
     - name: Run commands
       run: |
         case "${{ inputs.debug }}" in
@@ -190,6 +204,11 @@ runs:
                 [ -z "${copy_artifact_path}" ] || sudo cp -Rp ${{ steps.mount_image.outputs.mount }}${repository_path}/${copy_artifact_path} ${{ inputs.copy_artifact_dest }}
             done <<< "${{ inputs.copy_artifact_path }};"
         fi
+      shell: bash
+    - name: Unmount CPU info
+      if: ${{ inputs.cpu_info != '' }}
+      run: |
+        sudo umount ${{ steps.mount_image.outputs.mount }}/proc/cpuinfo
       shell: bash
     - name: Cleanup image
       run: |

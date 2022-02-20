@@ -140,6 +140,25 @@ emulated system will persist after execution. It does not accelerate execution
 significantly but can simplify the logic by avoiding the copy artifact step
 from the target system.
 
+#### `cpu_info`
+
+Path to a fake cpu_info file to be used instead of `/proc/cpuinfo`. Default is
+to not fake the CPU (/proc/cpuinfo will report amd64 CPU of GitHub runner).
+
+Some software checks for features using `/proc/cpuinfo` and this option can be
+used to trick them. The path is relative to the action (to use pre-defined
+settings) or to the local repository.
+
+Bundled with the action are the following files:
+- `cpuinfo/raspberrypi_3b` (with a 32 bits system)
+- `cpuinfo/raspberrypi_zero_w`
+- `cpuinfo/raspberrypi_zero2_w` (with a 32 bits system)
+- `cpuinfo/raspberrypi_zero2_w_arm64` (with a 64 bits system)
+
+On real hardware, the `/proc/cpuinfo` file content depends on the CPU being
+used in 32 bits or 64 bits mode, which in turn depends on the base image.
+Consequently, you may want to use `cpuinfo/raspberrypi_zero2_w_arm64` for
+64 bits builds and `cpuinfo/raspberrypi_zero2_w` for 32 bits builds.
 
 #### `optimize_image`
 
@@ -225,19 +244,24 @@ RaspberryPi OS images.
             - arch: armv6l
               cpu: arm1176
               base_image: raspios_lite:latest
+              cpu_info: raspberrypi_zero_w
             - arch: armv7l
               cpu: cortex-a7
               base_image: raspios_lite:latest
+              cpu_info: raspberrypi_3b
             - arch: aarch64
               cpu: cortex-a53
               base_image: raspios_lite_arm64:latest
+              cpu_info: raspberrypi_zero2_w_arm64_w
         steps:
         - uses: pguyot/arm-runner-action@v2.1-dev
           with:
             base_image: ${{ matrix.base_image }}
             cpu: ${{ matrix.cpu }}
+            cpu_info: ${{ matrix.cpu_info }}
             commands: |
                 test `uname -m` = ${{ matrix.arch }}
+                grep Model /proc/cpuinfo
 
 Internally, the `cpu` value is embedded in a wrapper for `qemu-arm-static` and
 `qemu-aarch64-static`. The actual qemu invoked depends on executables within
