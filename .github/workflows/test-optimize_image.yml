@@ -7,7 +7,7 @@ jobs:
       imgsize: ${{ steps.compress.outputs.imgsize }}
     steps:
     - uses: actions/checkout@v2
-    - uses: pguyot/arm-runner-action@HEAD
+    - uses: ./ # pguyot/arm-runner-action@HEAD
       id: optimized
       with:
         base_image: raspios_lite:2021-05-07
@@ -27,7 +27,7 @@ jobs:
       imgsize: ${{ steps.compress.outputs.imgsize }}
     steps:
     - uses: actions/checkout@v2
-    - uses: pguyot/arm-runner-action@HEAD
+    - uses: ./ # pguyot/arm-runner-action@HEAD
       id: unoptimized
       with:
         base_image: raspios_lite:2021-05-07
