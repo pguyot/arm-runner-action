@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: ./ # pguyot/arm-runner-action@v2
+    - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         cpu_info: cpuinfo/raspberrypi_zero_w
         bind_mount_repository: true
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: ./ # pguyot/arm-runner-action@v2
+    - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         cpu_info: cpuinfo/raspberrypi_3b
         bind_mount_repository: true
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: ./ # pguyot/arm-runner-action@v2
+    - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         cpu_info: cpuinfo/raspberrypi_zero2_w
         bind_mount_repository: true
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: ./ # pguyot/arm-runner-action@v2
+    - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         cpu_info: cpuinfo/raspberrypi_zero2_w_arm64
         bind_mount_repository: true

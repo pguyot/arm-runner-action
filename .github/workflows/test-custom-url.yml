@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: pguyot/arm-runner-action@HEAD
+    - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         base_image: https://raspi.debian.net/tested/20220121_raspi_1_bullseye.img.xz
         commands: |

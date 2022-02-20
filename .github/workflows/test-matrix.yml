@@ -17,7 +17,8 @@ jobs:
           cpu: cortex-a53
           base_image: raspios_lite_arm64:latest
     steps:
-    - uses: pguyot/arm-runner-action@HEAD
+    - uses: actions/checkout@v2
+    - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         base_image: ${{ matrix.base_image }}
         cpu: ${{ matrix.cpu }}

@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: pguyot/arm-runner-action@HEAD
+    - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         copy_artifact_path: artifact
         commands: |
