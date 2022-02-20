@@ -1,0 +1,67 @@
+name: Test cpu info
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  test_zero_w:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./ # pguyot/arm-runner-action@v2
+      with:
+        cpu_info: cpuinfo/raspberrypi_zero_w
+        bind_mount_repository: true
+        cpu: arm1176
+        commands: |
+            cat /proc/cpuinfo > cpuinfo.txt
+    - name: Test content of cpuinfo
+      run: |
+        grep -c ARMv6 cpuinfo.txt
+        grep -c "CPU architecture: 7" cpuinfo.txt
+        grep -c 6769746875620000 cpuinfo.txt
+  test_3b:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./ # pguyot/arm-runner-action@v2
+      with:
+        cpu_info: cpuinfo/raspberrypi_3b
+        bind_mount_repository: true
+        cpu: cortex-a7
+        commands: |
+            cat /proc/cpuinfo > cpuinfo.txt
+    - name: Test content of cpuinfo
+      run: |
+        grep -c ARMv7 cpuinfo.txt
+        grep -c "CPU architecture: 7" cpuinfo.txt
+        grep -c 676974687562003b cpuinfo.txt
+  test_zero2_w:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./ # pguyot/arm-runner-action@v2
+      with:
+        cpu_info: cpuinfo/raspberrypi_zero2_w
+        bind_mount_repository: true
+        cpu: cortex-a7
+        commands: |
+            cat /proc/cpuinfo > cpuinfo.txt
+    - name: Test content of cpuinfo
+      run: |
+        grep -c ARMv7 cpuinfo.txt
+        grep -c "CPU architecture: 7" cpuinfo.txt
+        grep -c 6769746875620002 cpuinfo.txt
+  test_zero2_w_arm64:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./ # pguyot/arm-runner-action@v2
+      with:
+        cpu_info: cpuinfo/raspberrypi_zero2_w_arm64
+        bind_mount_repository: true
+        cpu: cortex-a53
+        base_image: raspios_lite_arm64:latest
+        commands: |
+            cat /proc/cpuinfo > cpuinfo.txt
+    - name: Test content of cpuinfo
+      run: |
+        grep -c "CPU architecture: 8" cpuinfo.txt
+        grep -c 6769746875620002 cpuinfo.txt
