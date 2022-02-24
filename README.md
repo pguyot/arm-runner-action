@@ -81,15 +81,15 @@ The following values are allowed:
 - `raspios_lite:2021-10-30`
 - `raspios_lite:2022-01-28`
 - `raspios_lite:latest` (armhf build, *default*)
-- `raspios_lite_arm64:2022-01-28` (arm64, requires an ARMv8 CPU)
-- `raspios_lite_arm64:latest` (arm64, requires an ARMv8 CPU)
+- `raspios_lite_arm64:2022-01-28` (arm64)
+- `raspios_lite_arm64:latest` (arm64)
 - `dietpi:rpi_armv6_bullseye`
 - `dietpi:rpi_armv7_bullseye`
-- `dietpi:rpi_armv8_bullseye` (requires an ARMv8 CPU)
+- `dietpi:rpi_armv8_bullseye` (arm64)
 - `raspi_1_bullseye:20220121` (armel)
 - `raspi_2_bullseye:20220121` (armhf)
-- `raspi_3_bullseye:20220121` (arm64, requires an ARMv8 CPU)
-- `raspi_4_bullseye:20220121` (arm64, requires an ARMv8 CPU)
+- `raspi_3_bullseye:20220121` (arm64)
+- `raspi_4_bullseye:20220121` (arm64)
 
 The input parameter also accepts any custom URL beginning in http(s)://...
 
@@ -101,14 +101,25 @@ Enlarge the image by this number of MB. Default is to not enlarge the image.
 
 #### `cpu`
 
-CPU to pass to qemu.
+CPU to pass to qemu. Pass either a single CPU value or a pair
+`<arm_cpu>:<aarch64_cpu>`.
 
-The following values are recommended:
-- `arm1176` (translates to armv6l, suitable for Pi Zero, default)
-- `cortex-a8` (translates to armv7l, suitable for Pi 3/Pi 4 and Pi Zero 2)
-- `cortex-a53` (translates to aarch64, suitable for 64 bits OSes).
+Default is `arm1176:cortex-a53`, i.e. `arm1176` for arm and `cortex-a53` for
+aarch64. This is the most compatible pair for Raspberry Pi. Indeed, `arm1176`
+is the CPU of BCM2835 which is the SOC of first generation RaspberryPi and
+RaspberryPi Zero, while `cortex-a53` is the 64 bits CPU of the first 64 bits
+Raspberry Pi models. Code compiled for `arm1176` can be run on later 32 bits
+CPUs.
 
-The CPU and the base image should match (see _32 and 64 bits_ below).
+The following values are specially processed:
+- `arm1176` equivalent to `arm1176:cortex-a53`.
+- `cortex-a7` equivalent to `cortex-a7:cortex-a53`. Optimized for later Pi
+   models (Pi 3/Pi 4 and Pi Zero 2). Not suitable for Pi 1/Pi 2/Pi Zero.
+- `cortex-a8` equivalent to `cortex-a8:max`.
+- `cortex-a53` equivalent to `max:cortex-a53`.
+
+Whether code is executed in 32 bits or 64 bits (and build generates 32 bits
+or 64 bits binaries) depend on the image. See _32 and 64 bits_ below.
 
 #### `copy_artifact_path`
 
