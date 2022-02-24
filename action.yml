@@ -15,8 +15,8 @@ inputs:
     default: 'no'
   cpu:
     description: 'CPU architecture, arm1176 for arm6vl (Pi Zero)'
-    required: true
-    default: 'arm1176'
+    required: false
+    default: 'arm1176:cortex-a53'
   cpu_info:
     description: 'Path to cpu info file to be mounted on /proc/cpuinfo'
     required: false
@@ -83,8 +83,29 @@ runs:
       run: |
         sudo mv /usr/bin/qemu-arm-static /usr/bin/qemu-arm-static0
         sudo mv /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static0
-        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${{ inputs.cpu }} -O3 -s -o /usr/bin/qemu-arm-static
-        sudo cp /usr/bin/qemu-arm-static /usr/bin/qemu-aarch64-static
+        case ${{ inputs.cpu }} in
+        "")
+            cpu="arm1176:cortex-a53"
+        ;;
+        arm1176)
+            cpu="arm1176:cortex-a53"
+        ;;
+        cortex-a7)
+            cpu="cortex-a7:cortex-a53"
+        ;;
+        cortex-a8)
+            cpu="cortex-a8:max"
+        ;;
+        cortex-a53)
+            cpu="max:cortex-a53"
+        ;;
+        *)
+            cpu=${{ inputs.cpu }}
+        esac
+        arm_cpu=${cpu%:*}
+        aarch64_cpu=${cpu#*:}
+        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${arm_cpu} -O3 -s -o /usr/bin/qemu-arm-static
+        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${aarch64_cpu} -O3 -s -o /usr/bin/qemu-aarch64-static
         sudo update-binfmts --disable qemu-arm
         sudo update-binfmts --disable qemu-aarch64
         sudo update-binfmts --enable qemu-arm
