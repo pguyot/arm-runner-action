@@ -118,6 +118,14 @@ The following values are specially processed:
 - `cortex-a8` equivalent to `cortex-a8:max`.
 - `cortex-a53` equivalent to `max:cortex-a53`.
 
+Some software uses the output of `uname -m` or equivalent. This command is
+directly driven by this `cpu` option. You might want to compile 32 bits
+binaries with both `arm1176` which translates to `armv6l` and `cortex-a7` which
+translates to `armv7l`.
+
+For FPU and vector instruction sets, software usually automatically looks into
+`/proc/cpuinfo` or equivalent. This can be patched with `cpu_info` option.
+
 Whether code is executed in 32 bits or 64 bits (and build generates 32 bits
 or 64 bits binaries) depend on the image. See _32 and 64 bits_ below.
 
