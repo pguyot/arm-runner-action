@@ -72,6 +72,9 @@ case $url in
     *.xz)
         uncompress="xz -d"
     ;;
+    *.gz)
+        uncompress="gzip -d"
+    ;;
 esac
 
 filename=`basename ${url}`
