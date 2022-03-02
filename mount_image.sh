@@ -8,18 +8,22 @@ if [ ${additional_mb} -gt 0 ]; then
     dd if=/dev/zero bs=1M count=${additional_mb} >> ${image}
 fi
 
-loopdev=$(losetup --find --show ${image})
+loopdev=$(losetup --find --show --partscan ${image})
 echo "Created loopback device ${loopdev}"
 echo "::set-output name=loopdev::${loopdev}"
 
 if [ ${additional_mb} -gt 0 ]; then
+    if ((parted --script $loopdev print || false) | grep "Partition Table: gpt" > /dev/null); then
+        sgdisk -e "${loopdev}"
+    fi
     parted --script "${loopdev}" resizepart 2 100%
     e2fsck -p -f "${loopdev}p2"
     resize2fs "${loopdev}p2"
     echo "Finished resizing disk image."
 fi
 
-partprobe "${loopdev}"
+partprobe -s "${loopdev}"
+sleep 1
 bootdev=$(ls "${loopdev}"*1)
 rootdev=$(ls "${loopdev}"*2)
 
