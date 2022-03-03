@@ -1,0 +1,29 @@
+name: Test systemd-nspawn
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        use_systemd_nspawn: true
+        commands: |
+          uname -a
+
+  test_nspawn_export_env:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo "IMPORTED_VAR=value" >> $GITHUB_ENV
+    - uses: actions/checkout@v2
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        import_github_env: true
+        export_github_env: true
+        use_systemd_nspawn: true
+        commands: |
+          [ -n "${IMPORTED_VAR}" ]
+          echo "EXPORTED_VAR=value" >> $GITHUB_ENV
+    - run: |
+        [ -n "${EXPORTED_VAR}" ]
