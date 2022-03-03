@@ -118,7 +118,7 @@ runs:
       id: download_image
     - name: Mount and optionally resize image
       run: |
-        sudo bash ${{ github.action_path }}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }}
+        sudo bash ${{ github.action_path }}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }} ${{ inputs.use_systemd_nspawn }}
       shell: bash
       id: mount_image
     - name: Mount CPU info
