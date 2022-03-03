@@ -40,10 +40,10 @@ mount --bind /dev/pts "${mount}/dev/pts"
 
 cp "${mount}/etc/resolv.conf" "${mount}/etc/_resolv.conf"
 cp /etc/resolv.conf "${mount}/etc/resolv.conf"
-cp /usr/bin/qemu-arm-static ${mount}/usr/bin/qemu-arm-static0
-cp qemu-arm-static-wrapper ${mount}/usr/bin/qemu-arm-static
-cp /usr/bin/qemu-aarch64-static ${mount}/usr/bin/qemu-aarch64-static0
-cp qemu-aarch64-static-wrapper ${mount}/usr/bin/qemu-aarch64-static
+cp /usr/bin/qemu-arm-static0 ${mount}/usr/bin/qemu-arm-static0
+cp /usr/bin/qemu-arm-static ${mount}/usr/bin/qemu-arm-static
+cp /usr/bin/qemu-aarch64-static0 ${mount}/usr/bin/qemu-aarch64-static0
+cp /usr/bin/qemu-aarch64-static ${mount}/usr/bin/qemu-aarch64-static
 if [ -e "${mount}/etc/ld.so.preload" ]; then
     cp "${mount}/etc/ld.so.preload" "${mount}/etc/_ld.so.preload"
     echo > "${mount}/etc/ld.so.preload"

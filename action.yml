@@ -80,6 +80,7 @@ runs:
         sudo apt-get update && sudo apt-get install -y qemu qemu-user-static binfmt-support parted wget dosfstools zip
       shell: bash
     - name: Install qemu wrapper
+      shell: bash
       run: |
         case ${{ inputs.cpu }} in
         "")
@@ -102,13 +103,14 @@ runs:
         esac
         arm_cpu=${cpu%:*}
         aarch64_cpu=${cpu#*:}
-        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${arm_cpu} -O3 -s -o qemu-arm-static-wrapper
-        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${aarch64_cpu} -O3 -s -o qemu-aarch64-static-wrapper
+        sudo mv /usr/bin/qemu-arm-static /usr/bin/qemu-arm-static0
+        sudo mv /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static0
+        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${arm_cpu} -O3 -s -o /usr/bin/qemu-arm-static
+        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${aarch64_cpu} -O3 -s -o /usr/bin/qemu-aarch64-static
         sudo update-binfmts --disable qemu-arm
         sudo update-binfmts --disable qemu-aarch64
         sudo update-binfmts --enable qemu-arm
         sudo update-binfmts --enable qemu-aarch64
-      shell: bash
     - name: Download base image
       run: |
         bash ${{ github.action_path }}/download_image.sh ${{ inputs.base_image }}
@@ -243,6 +245,15 @@ runs:
         esac
         sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} ${{ steps.download_image.outputs.image }} "${{ inputs.optimize_image }}"
       shell: bash
+    - name: Restore qemu wrapper
+      shell: bash
+      run: |
+        sudo mv /usr/bin/qemu-arm-static0 /usr/bin/qemu-arm-static
+        sudo mv /usr/bin/qemu-aarch64-static0 /usr/bin/qemu-aarch64-static
+        sudo update-binfmts --disable qemu-arm
+        sudo update-binfmts --disable qemu-aarch64
+        sudo update-binfmts --enable qemu-arm
+        sudo update-binfmts --enable qemu-aarch64
 branding:
   icon: 'cpu'
   color: 'purple'
