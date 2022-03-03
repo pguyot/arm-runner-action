@@ -34,9 +34,9 @@ mount "${rootdev}" "${mount}"
 mount "${bootdev}" "${mount}/boot"
 
 # Prep the chroot
-mount --bind /proc "${mount}/proc"
-mount --bind /sys "${mount}/sys"
 if [ "${use_systemd_nspawn}x" = "x" -o "${use_systemd_nspawn}x" = "nox" ]; then
+    mount --bind /proc "${mount}/proc"
+    mount --bind /sys "${mount}/sys"
     mount --bind /dev "${mount}/dev"
     mount --bind /dev/pts "${mount}/dev/pts"
 fi
