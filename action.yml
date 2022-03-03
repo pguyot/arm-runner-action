@@ -81,8 +81,6 @@ runs:
       shell: bash
     - name: Install qemu wrapper
       run: |
-        sudo mv /usr/bin/qemu-arm-static /usr/bin/qemu-arm-static0
-        sudo mv /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static0
         case ${{ inputs.cpu }} in
         "")
             cpu="arm1176:cortex-a53"
@@ -104,8 +102,8 @@ runs:
         esac
         arm_cpu=${cpu%:*}
         aarch64_cpu=${cpu#*:}
-        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${arm_cpu} -O3 -s -o /usr/bin/qemu-arm-static
-        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${aarch64_cpu} -O3 -s -o /usr/bin/qemu-aarch64-static
+        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${arm_cpu} -O3 -s -o qemu-arm-static-wrapper
+        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${aarch64_cpu} -O3 -s -o qemu-aarch64-static-wrapper
         sudo update-binfmts --disable qemu-arm
         sudo update-binfmts --disable qemu-aarch64
         sudo update-binfmts --enable qemu-arm
