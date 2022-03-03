@@ -1,4 +1,4 @@
-name: Test armv7l cpu option
+name: Test successive invocations
 on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
@@ -7,7 +7,9 @@ jobs:
     - uses: actions/checkout@v2
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
-        cpu: cortex-a8
         commands: |
-            echo "Minimal"
-            test `uname -m` = 'armv7l'
+          echo "First invocation"
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        commands: |
+          echo "Second invocation"

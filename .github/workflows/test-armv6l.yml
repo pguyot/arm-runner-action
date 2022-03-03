@@ -1,4 +1,4 @@
-name: Test armv7l cpu option
+name: Test armv6l cpu option
 on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
@@ -7,7 +7,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
-        cpu: cortex-a8
+        cpu: arm1176
         commands: |
             echo "Minimal"
-            test `uname -m` = 'armv7l'
+            test `uname -m` = 'armv6l'
