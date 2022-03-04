@@ -9,20 +9,38 @@ if [ ${additional_mb} -gt 0 ]; then
     dd if=/dev/zero bs=1M count=${additional_mb} >> ${image}
 fi
 
-loopdev=$(losetup --find --show ${image})
+loopdev=$(losetup --find --show --partscan ${image})
 echo "Created loopback device ${loopdev}"
 echo "::set-output name=loopdev::${loopdev}"
 
 if [ ${additional_mb} -gt 0 ]; then
+    if ( (parted --script $loopdev print || false) | grep "Partition Table: gpt" > /dev/null); then
+        sgdisk -e "${loopdev}"
+    fi
     parted --script "${loopdev}" resizepart 2 100%
     e2fsck -p -f "${loopdev}p2"
     resize2fs "${loopdev}p2"
     echo "Finished resizing disk image."
 fi
 
-partprobe "${loopdev}"
-bootdev=$(ls "${loopdev}"*1)
-rootdev=$(ls "${loopdev}"*2)
+waitForFile() {
+    maxRetries=60
+    retries=0
+    until [ -n "$(compgen -G "$1")" ] ; do
+        retries=$((retries + 1))
+        if [ $retries -ge $maxRetries ] ; then
+            echo "Could not find $1 within $maxRetries seconds" >&2
+            return 1
+        fi
+        sleep 1
+    done
+    compgen -G "$1"
+}
+
+sync
+partprobe -s "${loopdev}"
+bootdev=$(waitForFile "${loopdev}*1")
+rootdev=$(waitForFile "${loopdev}*2")
 
 # Mount the image
 mount=${RUNNER_TEMP:-/home/actions/temp}/arm-runner/mnt

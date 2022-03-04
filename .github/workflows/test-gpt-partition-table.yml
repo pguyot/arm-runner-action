@@ -1,0 +1,14 @@
+name: Test expand GPT partition table
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ # pguyot/arm-runner-action@HEAD
+        with:
+          base_image: https://github.com/radxa/rock-pi-s-images-released/releases/download/rock-pi-s-v20210924/rockpis_debian_buster_server_arm64_20210924_0412-gpt.img.gz
+          image_additional_mb: 2048
+          cpu: cortex-a53
+          commands: |
+            test $(df -h --output=size / | tail -n 1) = '2.8G'
