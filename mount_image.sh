@@ -3,6 +3,7 @@ set -uo pipefail
 
 image=$1
 additional_mb=$2
+use_systemd_nspawn=$3
 
 if [ ${additional_mb} -gt 0 ]; then
     dd if=/dev/zero bs=1M count=${additional_mb} >> ${image}
@@ -51,10 +52,12 @@ mount "${rootdev}" "${mount}"
 mount "${bootdev}" "${mount}/boot"
 
 # Prep the chroot
-mount --bind /proc "${mount}/proc"
-mount --bind /sys "${mount}/sys"
-mount --bind /dev "${mount}/dev"
-mount --bind /dev/pts "${mount}/dev/pts"
+if [ "${use_systemd_nspawn}x" = "x" -o "${use_systemd_nspawn}x" = "nox" ]; then
+    mount --bind /proc "${mount}/proc"
+    mount --bind /sys "${mount}/sys"
+    mount --bind /dev "${mount}/dev"
+    mount --bind /dev/pts "${mount}/dev/pts"
+fi
 
 cp "${mount}/etc/resolv.conf" "${mount}/etc/_resolv.conf"
 cp /etc/resolv.conf "${mount}/etc/resolv.conf"

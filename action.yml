@@ -80,9 +80,8 @@ runs:
         sudo apt-get update && sudo apt-get install -y qemu qemu-user-static binfmt-support parted wget dosfstools zip
       shell: bash
     - name: Install qemu wrapper
+      shell: bash
       run: |
-        sudo mv /usr/bin/qemu-arm-static /usr/bin/qemu-arm-static0
-        sudo mv /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static0
         case ${{ inputs.cpu }} in
         "")
             cpu="arm1176:cortex-a53"
@@ -104,13 +103,14 @@ runs:
         esac
         arm_cpu=${cpu%:*}
         aarch64_cpu=${cpu#*:}
+        sudo mv /usr/bin/qemu-arm-static /usr/bin/qemu-arm-static0
+        sudo mv /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static0
         sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${arm_cpu} -O3 -s -o /usr/bin/qemu-arm-static
         sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${aarch64_cpu} -O3 -s -o /usr/bin/qemu-aarch64-static
         sudo update-binfmts --disable qemu-arm
         sudo update-binfmts --disable qemu-aarch64
         sudo update-binfmts --enable qemu-arm
         sudo update-binfmts --enable qemu-aarch64
-      shell: bash
     - name: Download base image
       run: |
         bash ${{ github.action_path }}/download_image.sh ${{ inputs.base_image }}
@@ -118,7 +118,7 @@ runs:
       id: download_image
     - name: Mount and optionally resize image
       run: |
-        sudo bash ${{ github.action_path }}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }}
+        sudo bash ${{ github.action_path }}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }} ${{ inputs.use_systemd_nspawn }}
       shell: bash
       id: mount_image
     - name: Mount CPU info
@@ -178,34 +178,43 @@ runs:
             sudo cp -Rp ${{ github.workspace }} ${{ steps.mount_image.outputs.mount }}${repository_path}
         ;;
         esac
-        sudo touch ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
-        sudo chmod o+wx ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
-        echo "#!${shell_path}" > ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
-        echo "set -${debug}${exit_on_fail}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+        if [ "${{ inputs.use_systemd_nspawn }}x" != "x" -a "${{ inputs.use_systemd_nspawn }}x" != "nox" ]; then
+            chroot_script_dir=/scripts
+            script_dir=${RUNNER_TEMP:-/home/actions/temp}/scripts
+        else
+            chroot_script_dir=/tmp
+            script_dir=${{ steps.mount_image.outputs.mount }}/tmp
+        fi
+        mkdir -p ${script_dir}
+        script_path=${script_dir}/commands.sh
+        sudo touch ${script_path}
+        sudo chmod o+wx ${script_path}
+        echo "#!${shell_path}" > ${script_path}
+        echo "set -${debug}${exit_on_fail}" >> ${script_path}
         case "${{ inputs.import_github_env }}" in
         yes|true)
-            export | sed -e 's/^declare -x //g;s/^[^=]*$/\0=""/g;s/='\''\(.*\)'\''$/=\1/g' >> ${{ steps.mount_image.outputs.mount }}/tmp/environment.sh
-            echo '. ./tmp/environment.sh' >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+            export | sed -e 's/^declare -x //g;s/^[^=]*$/\0=""/g;s/='\''\(.*\)'\''$/=\1/g' >> ${script_dir}/environment.sh
+            echo ". ${chroot_script_dir}/environment.sh" >> ${script_path}
         ;;
         esac
         case "${{ inputs.export_github_env }}" in
         yes|true)
-            echo "GITHUB_ENV=/tmp/github_env.sh" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
+            echo "GITHUB_ENV=${chroot_script_dir}/github_env.sh" >> ${script_path}
         ;;
         esac
-        echo "cd ${repository_path}" >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh
-        cat >> ${{ steps.mount_image.outputs.mount }}/tmp/commands.sh <<"ARM_RUNNER_INPUT_COMMANDS_EOF"
+        echo "cd ${repository_path}" >> ${script_path}
+        cat >> ${script_path} <<"ARM_RUNNER_INPUT_COMMANDS_EOF"
         ${{ inputs.commands }}
         ARM_RUNNER_INPUT_COMMANDS_EOF
         if [ "${{ inputs.use_systemd_nspawn }}x" != "x" -a "${{ inputs.use_systemd_nspawn }}x" != "nox" ]; then
             sudo apt-get install -y systemd-container
-            sudo systemd-nspawn -D ${{ steps.mount_image.outputs.mount }} /tmp/commands.sh
+            sudo systemd-nspawn -q -a --bind=${script_dir}:${chroot_script_dir} -D ${{ steps.mount_image.outputs.mount }} ${shell_path} ${chroot_script_dir}/commands.sh
         else
-            sudo chroot ${{ steps.mount_image.outputs.mount }} /tmp/commands.sh
+            sudo chroot ${{ steps.mount_image.outputs.mount }} ${chroot_script_dir}/commands.sh
         fi
         rc=$?
-        [ -f ${{ steps.mount_image.outputs.mount }}/tmp/github_env.sh ] && \
-            cat ${{ steps.mount_image.outputs.mount }}/tmp/github_env.sh >> $GITHUB_ENV
+        [ -f ${script_dir}/github_env.sh ] && \
+            cat ${script_dir}/github_env.sh >> $GITHUB_ENV
         exit $rc
       shell: bash
     - name: Copy artifacts within image
@@ -245,6 +254,15 @@ runs:
         esac
         sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} ${{ steps.download_image.outputs.image }} "${{ inputs.optimize_image }}"
       shell: bash
+    - name: Restore qemu wrapper
+      shell: bash
+      run: |
+        sudo mv /usr/bin/qemu-arm-static0 /usr/bin/qemu-arm-static
+        sudo mv /usr/bin/qemu-aarch64-static0 /usr/bin/qemu-aarch64-static
+        sudo update-binfmts --disable qemu-arm
+        sudo update-binfmts --disable qemu-aarch64
+        sudo update-binfmts --enable qemu-arm
+        sudo update-binfmts --enable qemu-aarch64
 branding:
   icon: 'cpu'
   color: 'purple'
