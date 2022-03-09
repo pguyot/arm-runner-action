@@ -65,3 +65,18 @@ jobs:
       run: |
         grep -c "CPU architecture: 8" cpuinfo.txt
         grep -c 6769746875620002 cpuinfo.txt
+  test_4b:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        cpu_info: cpuinfo/raspberrypi_4b
+        bind_mount_repository: true
+        cpu: cortex-a53
+        commands: |
+            cat /proc/cpuinfo > cpuinfo.txt
+    - name: Test content of cpuinfo
+      run: |
+        grep -c "CPU architecture: 8" cpuinfo.txt
+        grep -c 1000000018753000 cpuinfo.txt

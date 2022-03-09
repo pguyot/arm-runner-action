@@ -169,6 +169,7 @@ used to trick them. The path is relative to the action (to use pre-defined
 settings) or to the local repository.
 
 Bundled with the action are the following files:
+- `cpuinfo/raspberrypi_4b`
 - `cpuinfo/raspberrypi_3b` (with a 32 bits system)
 - `cpuinfo/raspberrypi_zero_w`
 - `cpuinfo/raspberrypi_zero2_w` (with a 32 bits system)
