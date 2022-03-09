@@ -79,4 +79,4 @@ jobs:
     - name: Test content of cpuinfo
       run: |
         grep -c "CPU architecture: 8" cpuinfo.txt
-        grep -c 1000000018753000 cpuinfo.txt
+        grep -c 676974687562004b cpuinfo.txt
