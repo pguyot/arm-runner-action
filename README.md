@@ -37,7 +37,7 @@ Typical usage to upload an image as an artifact:
         - uses: pguyot/arm-runner-action@v2
           id: build_image
           with:
-            base_image: raspios_lite:2022-01-28
+            base_image: raspios_lite:2022-04-04
             commands: |
                 commands to build image
         - name: Compress the release image
@@ -80,8 +80,10 @@ The following values are allowed:
 - `raspios_lite:2021-05-07`
 - `raspios_lite:2021-10-30`
 - `raspios_lite:2022-01-28`
+- `raspios_lite:2022-04-04`
 - `raspios_lite:latest` (armhf build, *default*)
 - `raspios_lite_arm64:2022-01-28` (arm64)
+- `raspios_lite_arm64:2022-04-04` (arm64)
 - `raspios_lite_arm64:latest` (arm64)
 - `dietpi:rpi_armv6_bullseye`
 - `dietpi:rpi_armv7_bullseye`
@@ -133,7 +135,7 @@ or 64 bits binaries) depend on the image. See _32 and 64 bits_ below.
 
 Source paths(s) inside the image to copy outside after the commands have
 executed. Relative to the `/<repository_name>` directory or the directory
-defined with `copy_repolity_path`. Globs are allowed. To copy multiple paths,
+defined with `copy_repository_path`. Globs are allowed. To copy multiple paths,
 provide a list of paths, separated by semicolons. Default is not to copy.
 
 #### `copy_artifact_dest`

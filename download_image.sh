@@ -5,14 +5,17 @@ case $1 in
     "raspbian_lite:latest")
         url=https://downloads.raspberrypi.org/raspbian_lite_latest
         uncompress="unzip -u"
+	suffix="img.zip"
     ;;
     "raspios_lite:latest")
         url=https://downloads.raspberrypi.org/raspios_lite_armhf_latest
-        uncompress="unzip -u"
+        uncompress="xz -d"
+	suffix=".img.xz"
     ;;
     "raspios_lite_arm64:latest")
         url=https://downloads.raspberrypi.org/raspios_lite_arm64_latest
-        uncompress="unzip -u"
+        uncompress="xz -d"
+	suffix=".img.xz"
     ;;
     "raspbian_lite:2020-02-13")
         url=https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2020-02-14/2020-02-13-raspbian-buster-lite.zip
@@ -29,8 +32,14 @@ case $1 in
     "raspios_lite:2022-01-28")
         url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2022-01-28/2022-01-28-raspios-bullseye-armhf-lite.zip
     ;;
+    "raspios_lite:2022-04-04")
+        url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2022-04-07/2022-04-04-raspios-bullseye-armhf-lite.xz
+    ;;
     "raspios_lite_arm64:2022-01-28")
         url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-01-28/2022-01-28-raspios-bullseye-arm64-lite.zip
+    ;;
+    "raspios_lite_arm64:2022-04-04")
+        url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-04-07/2022-04-04-raspios-bullseye-arm64-lite.xz
     ;;
     "dietpi:rpi_armv6_bullseye")
         url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv6-Bullseye.7z
@@ -65,23 +74,29 @@ esac
 case $url in
     *.zip)
         uncompress="unzip -u"
+	suffix=""
     ;;
     *.7z)
         uncompress="7zr e"
+	suffix=""
     ;;
     *.xz)
         uncompress="xz -d"
+	suffix=""
     ;;
     *.gz)
         uncompress="gzip -d"
+	suffix=""
     ;;
 esac
 
-filename=`basename ${url}`
 tempdir=${RUNNER_TEMP:-/home/actions/temp}/arm-runner
 mkdir -p ${tempdir}
 cd ${tempdir}
+rm -f arm-runner.img
 wget -q ${url}
-${uncompress} ${filename}
+filename=`basename ${url}`
+[ -n "${suffix}" ] && mv ${filename} ${filename}${suffix}
+${uncompress} ${filename}${suffix}
 mv "$(ls *.img */*.img 2>/dev/null | head -n 1)" arm-runner.img
 echo "::set-output name=image::${tempdir}/arm-runner.img"
