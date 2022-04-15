@@ -4,15 +4,15 @@ set -uo pipefail
 case $1 in
     "raspbian_lite:latest")
         url=https://downloads.raspberrypi.org/raspbian_lite_latest
-        uncompress="unzip -u"
+        uncompress="xz -d"
     ;;
     "raspios_lite:latest")
         url=https://downloads.raspberrypi.org/raspios_lite_armhf_latest
-        uncompress="unzip -u"
+        uncompress="xz -d"
     ;;
     "raspios_lite_arm64:latest")
         url=https://downloads.raspberrypi.org/raspios_lite_arm64_latest
-        uncompress="unzip -u"
+        uncompress="xz -d"
     ;;
     "raspbian_lite:2020-02-13")
         url=https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2020-02-14/2020-02-13-raspbian-buster-lite.zip
