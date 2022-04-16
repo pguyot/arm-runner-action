@@ -4,15 +4,12 @@ set -uo pipefail
 case $1 in
     "raspbian_lite:latest")
         url=https://downloads.raspberrypi.org/raspbian_lite_latest
-        uncompress="unzip -u"
     ;;
     "raspios_lite:latest")
         url=https://downloads.raspberrypi.org/raspios_lite_armhf_latest
-        uncompress="unzip -u"
     ;;
     "raspios_lite_arm64:latest")
         url=https://downloads.raspberrypi.org/raspios_lite_arm64_latest
-        uncompress="unzip -u"
     ;;
     "raspbian_lite:2020-02-13")
         url=https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2020-02-14/2020-02-13-raspbian-buster-lite.zip
@@ -62,26 +59,28 @@ case $1 in
     ;;
 esac
 
-case $url in
-    *.zip)
-        uncompress="unzip -u"
-    ;;
-    *.7z)
-        uncompress="7zr e"
-    ;;
-    *.xz)
-        uncompress="xz -d"
-    ;;
-    *.gz)
-        uncompress="gzip -d"
-    ;;
-esac
-
-filename=`basename ${url}`
 tempdir=${RUNNER_TEMP:-/home/actions/temp}/arm-runner
 mkdir -p ${tempdir}
 cd ${tempdir}
-wget -q ${url}
-${uncompress} ${filename}
+wget --trust-server-names --content-disposition -q ${url}
+case `echo *` in
+    *.zip)
+        unzip -u *
+    ;;
+    *.7z)
+        7zr e *
+    ;;
+    *.xz)
+        xz -d *
+    ;;
+    *.gz)
+        gzip -d *
+    ;;
+    *.img)
+    ;;
+    *)
+        echo "Don't know how to uncompress image " *
+        exit 1
+esac
 mv "$(ls *.img */*.img 2>/dev/null | head -n 1)" arm-runner.img
 echo "::set-output name=image::${tempdir}/arm-runner.img"
