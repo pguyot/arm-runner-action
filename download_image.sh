@@ -60,6 +60,7 @@ case $1 in
 esac
 
 tempdir=${RUNNER_TEMP:-/home/actions/temp}/arm-runner
+rm -rf ${tempdir}
 mkdir -p ${tempdir}
 cd ${tempdir}
 wget --trust-server-names --content-disposition -q ${url}
