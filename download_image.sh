@@ -26,8 +26,14 @@ case $1 in
     "raspios_lite:2022-01-28")
         url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2022-01-28/2022-01-28-raspios-bullseye-armhf-lite.zip
     ;;
+    "raspios_lite:2022-04-04")
+        url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2022-04-07/2022-04-04-raspios-bullseye-armhf-lite.xz
+    ;;
     "raspios_lite_arm64:2022-01-28")
         url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-01-28/2022-01-28-raspios-bullseye-arm64-lite.zip
+    ;;
+    "raspios_lite_arm64:2022-04-04")
+        url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-04-07/2022-04-04-raspios-bullseye-arm64-lite.xz
     ;;
     "dietpi:rpi_armv6_bullseye")
         url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv6-Bullseye.7z
