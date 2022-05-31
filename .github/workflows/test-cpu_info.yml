@@ -1,5 +1,12 @@
 name: Test cpu info
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
 jobs:
   test_zero_w:
     runs-on: ubuntu-latest

@@ -1,5 +1,12 @@
 name: Test artifact copy
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest

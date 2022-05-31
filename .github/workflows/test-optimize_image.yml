@@ -1,5 +1,12 @@
 name: Test optimize_image
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
 jobs:
   optimized:
     runs-on: ubuntu-latest
