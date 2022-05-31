@@ -79,6 +79,18 @@ case `echo *` in
     ;;
     *.img)
     ;;
+    *.zip\?*)
+        unzip -u *
+    ;;
+    *.7z\?*)
+        7zr e *
+    ;;
+    *.xz\?*)
+        xz -d *
+    ;;
+    *.gz\?*)
+        gzip -d *
+    ;;
     *)
         echo "Don't know how to uncompress image " *
         exit 1
