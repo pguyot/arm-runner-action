@@ -193,7 +193,8 @@ chroot.
 #### `rootpartition`
 
 Index (starting with 1) of the root partition. Default is 2, which is suitable
-for Raspberry Pi. NVIDIA Jetson images require 1.
+for Raspberry Pi. NVIDIA Jetson images require 1. This is the partition that is
+resized with `image_additional_mb` option.
 
 #### `bootpartition`
 

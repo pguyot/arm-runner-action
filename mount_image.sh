@@ -24,7 +24,7 @@ if [ ${additional_mb} -gt 0 ]; then
     if ( (parted --script $loopdev print || false) | grep "Partition Table: gpt" > /dev/null); then
         sgdisk -e "${loopdev}"
     fi
-    parted --script "${loopdev}" resizepart 2 100%
+    parted --script "${loopdev}" resizepart ${rootpartition} 100%
     e2fsck -p -f "${loopdev}p${rootpartition}"
     resize2fs "${loopdev}p${rootpartition}"
     echo "Finished resizing disk image."

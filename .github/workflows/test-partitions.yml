@@ -1,4 +1,4 @@
-name: Test custom url
+name: Test partitions
 on:
   push:
     branches:
