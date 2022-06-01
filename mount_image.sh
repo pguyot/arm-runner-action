@@ -4,6 +4,13 @@ set -uo pipefail
 image=$1
 additional_mb=$2
 use_systemd_nspawn=$3
+rootpartition=$4
+
+if [ $# -ge 5 ]; then
+    bootpartition=$5
+else
+    bootpartition=
+fi
 
 if [ ${additional_mb} -gt 0 ]; then
     dd if=/dev/zero bs=1M count=${additional_mb} >> ${image}
@@ -17,9 +24,9 @@ if [ ${additional_mb} -gt 0 ]; then
     if ( (parted --script $loopdev print || false) | grep "Partition Table: gpt" > /dev/null); then
         sgdisk -e "${loopdev}"
     fi
-    parted --script "${loopdev}" resizepart 2 100%
-    e2fsck -p -f "${loopdev}p2"
-    resize2fs "${loopdev}p2"
+    parted --script "${loopdev}" resizepart ${rootpartition} 100%
+    e2fsck -p -f "${loopdev}p${rootpartition}"
+    resize2fs "${loopdev}p${rootpartition}"
     echo "Finished resizing disk image."
 fi
 
@@ -39,8 +46,12 @@ waitForFile() {
 
 sync
 partprobe -s "${loopdev}"
-bootdev=$(waitForFile "${loopdev}*1")
-rootdev=$(waitForFile "${loopdev}*2")
+if [ "x$bootpartition" != "x" ]; then
+    bootdev=$(waitForFile "${loopdev}p${bootpartition}")
+else
+    bootdev=
+fi
+rootdev=$(waitForFile "${loopdev}p${rootpartition}")
 
 # Mount the image
 mount=${RUNNER_TEMP:-/home/actions/temp}/arm-runner/mnt
@@ -48,8 +59,10 @@ mkdir -p ${mount}
 echo "::set-output name=mount::${mount}"
 [ ! -d "${mount}" ] && mkdir "${mount}"
 mount "${rootdev}" "${mount}"
-[ ! -d "${mount}/boot" ] && mkdir "${mount}/boot"
-mount "${bootdev}" "${mount}/boot"
+if [ "x${bootdev}" ]; then
+    [ ! -d "${mount}/boot" ] && mkdir "${mount}/boot"
+    mount "${bootdev}" "${mount}/boot"
+fi
 
 # Prep the chroot
 if [ "${use_systemd_nspawn}x" = "x" -o "${use_systemd_nspawn}x" = "nox" ]; then

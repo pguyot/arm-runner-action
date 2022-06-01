@@ -5,6 +5,7 @@ loopdev=$1
 mount=$2
 image=$3
 optimize=$4
+rootpartition=$5
 
 rm "${mount}/usr/bin/qemu-arm-static0"
 rm "${mount}/usr/bin/qemu-arm-static"
@@ -33,7 +34,7 @@ if [[ -d "${mount}" ]]; then
     umount "${mount}" || true
 
     if [[ "${optimize}x" == "x" || "${optimize}x" == "yesx" ]]; then
-        rootfs_partnum=2
+        rootfs_partnum=${rootpartition}
         rootdev=$(ls "${loopdev}"*${rootfs_partnum})
 
         echo "Resizing root filesystem to minimal size."

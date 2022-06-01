@@ -44,6 +44,14 @@ inputs:
     description: 'Use systemd-nspawn instead of chroot'
     required: false
     default: 'no'
+  bootpartition:
+    description: 'Partition number for boot (/boot), empty means none'
+    required: false
+    default: '1'
+  rootpartition:
+    description: 'Partition number for root (/)'
+    required: false
+    default: '2'
   shell:
     description: 'Path to shell to run the commands with'
     required: false
@@ -118,7 +126,7 @@ runs:
       id: download_image
     - name: Mount and optionally resize image
       run: |
-        sudo bash ${{ github.action_path }}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }} ${{ inputs.use_systemd_nspawn }}
+        sudo bash ${{ github.action_path }}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }} ${{ inputs.use_systemd_nspawn }} ${{ inputs.rootpartition }} ${{ inputs.bootpartition }}
       shell: bash
       id: mount_image
     - name: Mount CPU info
@@ -252,7 +260,7 @@ runs:
             sudo umount ${{ steps.mount_image.outputs.mount }}${repository_path}
         ;;
         esac
-        sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} ${{ steps.download_image.outputs.image }} "${{ inputs.optimize_image }}"
+        sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} ${{ steps.download_image.outputs.image }} "${{ inputs.optimize_image }}" "${{ inputs.rootpartition }}"
       shell: bash
     - name: Restore qemu wrapper
       shell: bash

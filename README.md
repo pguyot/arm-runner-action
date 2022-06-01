@@ -192,6 +192,18 @@ image compression more efficient. Default is to optimize image.
 Use `systemd-nspawn` instead of chroot to run commands. Default is to use
 chroot.
 
+#### `rootpartition`
+
+Index (starting with 1) of the root partition. Default is 2, which is suitable
+for Raspberry Pi. NVIDIA Jetson images require 1. This is the partition that is
+resized with `image_additional_mb` option.
+
+#### `bootpartition`
+
+Index (starting with 1) of the boot partition which gets mounted at /boot.
+Default is 1, which is suitable for Raspberry Pi. If the value is empty,
+the partition is not mounted.
+
 #### `shell`
 
 Path to shell or shell name to run the commands in. Defaults to /bin/sh.
