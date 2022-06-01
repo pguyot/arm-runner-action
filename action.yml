@@ -260,7 +260,7 @@ runs:
             sudo umount ${{ steps.mount_image.outputs.mount }}${repository_path}
         ;;
         esac
-        sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} ${{ steps.download_image.outputs.image }} "${{ inputs.optimize_image }}"
+        sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} ${{ steps.download_image.outputs.image }} "${{ inputs.optimize_image }}" "${{ inputs.rootpartition }}"
       shell: bash
     - name: Restore qemu wrapper
       shell: bash
