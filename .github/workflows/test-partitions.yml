@@ -21,3 +21,4 @@ jobs:
         commands: |
           cat /etc/os-release
           uname -a
+          host github.com

@@ -59,7 +59,7 @@ mkdir -p ${mount}
 echo "::set-output name=mount::${mount}"
 [ ! -d "${mount}" ] && mkdir "${mount}"
 mount "${rootdev}" "${mount}"
-if [ "x${bootdev}" ]; then
+if [ "x${bootdev}" != "x" ]; then
     [ ! -d "${mount}/boot" ] && mkdir "${mount}/boot"
     mount "${bootdev}" "${mount}/boot"
 fi
@@ -72,7 +72,7 @@ if [ "${use_systemd_nspawn}x" = "x" -o "${use_systemd_nspawn}x" = "nox" ]; then
     mount --bind /dev/pts "${mount}/dev/pts"
 fi
 
-cp "${mount}/etc/resolv.conf" "${mount}/etc/_resolv.conf"
+mv "${mount}/etc/resolv.conf" "${mount}/etc/_resolv.conf"
 cp /etc/resolv.conf "${mount}/etc/resolv.conf"
 cp /usr/bin/qemu-arm-static0 ${mount}/usr/bin/qemu-arm-static0
 cp /usr/bin/qemu-arm-static ${mount}/usr/bin/qemu-arm-static
