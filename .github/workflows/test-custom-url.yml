@@ -20,7 +20,7 @@ jobs:
           uname -a
 
   build_ubuntu_22_04:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
     - uses: ./ # pguyot/arm-runner-action@HEAD
