@@ -163,7 +163,13 @@ runs:
             exit_on_fail=''
         ;;
         esac
-        shell=${{ inputs.shell }}
+        shell_with_opts="${{ inputs.shell }}"
+        shell=${shell_with_opts%% *}
+        if [ "${shell}" != "${shell_with_opts}" ]; then
+            shell_opts=${shell_with_opts#* }
+        else
+            shell_opts=""
+        fi
         shell_package=${{ inputs.shell_package }}
         [ -x ${{ steps.mount_image.outputs.mount }}/${shell} ] || \
         shell_path=$(sudo chroot ${{ steps.mount_image.outputs.mount }} which ${shell}) || \
@@ -195,10 +201,13 @@ runs:
         fi
         mkdir -p ${script_dir}
         script_path=${script_dir}/commands.sh
-        sudo touch ${script_path}
-        sudo chmod o+wx ${script_path}
-        echo "#!${shell_path}" > ${script_path}
-        echo "set -${debug}${exit_on_fail}" >> ${script_path}
+        touch ${script_path}
+        if [ "${debug}${exit_on_fail}" != "" ]; then
+            shell_basename=`basename ${shell_path}`
+            if [ "${shell_basename}" = "sh" -o "${shell_basename}" = "bash" -o "${shell_basename}" = "ksh" -o "${shell_package}" = "ksh" ]; then
+                echo "set -${debug}${exit_on_fail}" >> ${script_path}
+            fi
+        fi
         case "${{ inputs.import_github_env }}" in
         yes|true)
             export | sed -e 's/^declare -x //g;s/^[^=]*$/\0=""/g;s/='\''\(.*\)'\''$/=\1/g' >> ${script_dir}/environment.sh
@@ -216,9 +225,9 @@ runs:
         ARM_RUNNER_INPUT_COMMANDS_EOF
         if [ "${{ inputs.use_systemd_nspawn }}x" != "x" -a "${{ inputs.use_systemd_nspawn }}x" != "nox" ]; then
             sudo apt-get install -y systemd-container
-            sudo systemd-nspawn -q -a --bind=${script_dir}:${chroot_script_dir} -D ${{ steps.mount_image.outputs.mount }} ${shell_path} ${chroot_script_dir}/commands.sh
+            sudo systemd-nspawn -q -a --bind=${script_dir}:${chroot_script_dir} -D ${{ steps.mount_image.outputs.mount }} ${shell_path} ${shell_opts} ${chroot_script_dir}/commands.sh
         else
-            sudo chroot ${{ steps.mount_image.outputs.mount }} ${chroot_script_dir}/commands.sh
+            sudo chroot ${{ steps.mount_image.outputs.mount }} ${shell_path} ${shell_opts} ${chroot_script_dir}/commands.sh
         fi
         rc=$?
         [ -f ${script_dir}/github_env.sh ] && \
