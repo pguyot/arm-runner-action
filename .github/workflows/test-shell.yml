@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build_ksh93:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -19,3 +19,21 @@ jobs:
         exit_on_fail: false
         commands: |
           dpkg -l ksh | grep ^ii
+  build_options_full_path:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        shell: /bin/bash -o pipefail
+        commands: |
+            [[ "$SHELLOPTS" =~ "pipefail" ]] || exit 1
+  build_options_not_full_path:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        shell: bash -o pipefail
+        commands: |
+            [[ "$SHELLOPTS" =~ "pipefail" ]] || exit 1
