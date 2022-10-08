@@ -244,11 +244,12 @@ runs:
         fi
       shell: bash
     - name: Unmount CPU info
-      if: ${{ inputs.cpu_info != '' }}
+      if: ${{ always() && inputs.cpu_info != '' }}
       run: |
         sudo umount ${{ steps.mount_image.outputs.mount }}/proc/cpuinfo
       shell: bash
     - name: Cleanup image
+      if: always()
       run: |
         case ${{ inputs.bind_mount_repository }} in
         yes|true)
@@ -263,6 +264,7 @@ runs:
         sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} ${{ steps.download_image.outputs.image }} "${{ inputs.optimize_image }}" "${{ inputs.rootpartition }}"
       shell: bash
     - name: Restore qemu wrapper
+      if: always()
       shell: bash
       run: |
         sudo mv /usr/bin/qemu-arm-static0 /usr/bin/qemu-arm-static
