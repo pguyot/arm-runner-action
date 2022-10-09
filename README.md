@@ -222,7 +222,7 @@ If missing, it will be installed. See `shell_package`.
 If defined as basename filename, it will be used as long as the shell binary
 exists under PATH after the package is installed.
 
-The option include options, e.g.:
+Parameters can be passed to the shell, e.g.:
 ```yaml
 shell: /bin/bash -eo pipefail
 ```
