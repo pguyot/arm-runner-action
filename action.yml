@@ -274,10 +274,10 @@ runs:
       if: always()
       shell: bash
       run: |
-        sudo rm /usr/bin/qemu-arm-static0
-        sudo rm /usr/bin/qemu-aarch64-static0
         sudo update-binfmts --package arm-runner-action --remove arm-runner-action-qemu-arm /usr/bin/qemu-arm-static0
         sudo update-binfmts --package arm-runner-action --remove arm-runner-action-qemu-aarch64 /usr/bin/qemu-aarch64-static0
+        sudo rm /usr/bin/qemu-arm-static0
+        sudo rm /usr/bin/qemu-aarch64-static0
         sudo update-binfmts --import qemu-arm
         sudo update-binfmts --import qemu-aarch64
 branding:
