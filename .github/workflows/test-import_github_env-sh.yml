@@ -13,7 +13,7 @@ jobs:
     steps:
     - run: |
         echo "VARNAME=value" >> $GITHUB_ENV
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         shell: sh
