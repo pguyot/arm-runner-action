@@ -18,7 +18,7 @@ fi
 
 loopdev=$(losetup --find --show --partscan ${image})
 echo "Created loopback device ${loopdev}"
-echo "::set-output name=loopdev::${loopdev}"
+echo "loopdev=${loopdev}" >> "$GITHUB_OUTPUT"
 
 if [ ${additional_mb} -gt 0 ]; then
     if ( (parted --script $loopdev print || false) | grep "Partition Table: gpt" > /dev/null); then
@@ -56,7 +56,7 @@ rootdev=$(waitForFile "${loopdev}p${rootpartition}")
 # Mount the image
 mount=${RUNNER_TEMP:-/home/actions/temp}/arm-runner/mnt
 mkdir -p ${mount}
-echo "::set-output name=mount::${mount}"
+echo "mount=${mount}" >> "$GITHUB_OUTPUT"
 [ ! -d "${mount}" ] && mkdir "${mount}"
 mount "${rootdev}" "${mount}"
 if [ "x${bootdev}" != "x" ]; then

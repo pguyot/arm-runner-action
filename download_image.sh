@@ -102,4 +102,4 @@ case `echo *` in
         exit 1
 esac
 mv "$(ls *.img */*.img 2>/dev/null | head -n 1)" arm-runner.img
-echo "::set-output name=image::${tempdir}/arm-runner.img"
+echo "image=${tempdir}/arm-runner.img" >> "$GITHUB_OUTPUT"
