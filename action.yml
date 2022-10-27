@@ -64,6 +64,10 @@ inputs:
     description: 'Exit immediately if a command exits with a non-zero status'
     required: false
     default: 'yes'
+  copy_artifacts_on_fail:
+    description: 'Copy artifacts if a command exits with a non-zero status'
+    required: false
+    default: 'no'
   debug:
     description: 'Display commands as they are executed'
     required: false
@@ -138,6 +142,7 @@ runs:
         sudo mount --bind ${cpu_info_path} ${{ steps.mount_image.outputs.mount }}/proc/cpuinfo
       shell: bash
     - name: Run commands
+      id: runcmd
       run: |
         case "${{ inputs.debug }}" in
         yes|true)
@@ -233,6 +238,7 @@ runs:
         exit $rc
       shell: bash
     - name: Copy artifacts within image
+      if: ${{ always() && inputs.copy_artifacts_on_fail == 'yes' || steps.runcmd.conclusion != 'failure' }}
       run: |
         case "${{ inputs.debug }}" in
         yes|true)

@@ -241,6 +241,11 @@ Exit immediately if a command exits with a non-zero status. Default is to exit.
 Set to `no` or `false` to disable exiting on command failure. This only works
 with `sh`, `bash` and `ksh` shells.
 
+#### `copy_artifacts_on_fail`
+
+Copy artifacts if a command exits with a non-zero status. Default is to no copy.
+Set to `yes` to copy artifacts.
+
 #### `debug`
 
 Display executed commands as they are executed. Enabled by default.
