@@ -115,8 +115,9 @@ runs:
         sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${aarch64_cpu} -O3 -s -o /usr/bin/qemu-aarch64-static0
         sudo update-binfmts --unimport qemu-arm
         sudo update-binfmts --unimport qemu-aarch64
-        sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-arm /usr/bin/qemu-arm-static0 --magic '\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff'
-        sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-aarch64 /usr/bin/qemu-aarch64-static0 --magic '\x7f\x45\x4c\x46\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff'
+        sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-arm /usr/bin/qemu-arm-static0 --magic '\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
+        sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-aarch64 /usr/bin/qemu-aarch64-static0 --magic '\x7f\x45\x4c\x46\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
+
     - name: Download base image
       run: |
         bash ${{ github.action_path }}/download_image.sh ${{ inputs.base_image }}
