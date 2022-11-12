@@ -203,6 +203,11 @@ image compression more efficient. Default is to optimize image.
 Use `systemd-nspawn` instead of chroot to run commands. Default is to use
 chroot.
 
+#### `systemd_nspawn_options`
+
+Additional options passed to `systemd-nspawn`. For example, `-E CI=${CI}` to pass
+CI environment variable. See [systemd-nspawn(1)](https://manpages.ubuntu.com/manpages/focal/man1/systemd-nspawn.1.html).
+
 #### `rootpartition`
 
 Index (starting with 1) of the root partition. Default is 2, which is suitable
