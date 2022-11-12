@@ -44,6 +44,10 @@ inputs:
     description: 'Use systemd-nspawn instead of chroot'
     required: false
     default: 'no'
+  systemd_nspawn_options:
+    description: 'Options passed to systemd-nspawn, e.g. -E CI=${CI}'
+    required: false
+    default: ''
   bootpartition:
     description: 'Partition number for boot (/boot), empty means none'
     required: false
@@ -223,9 +227,9 @@ runs:
         ARM_RUNNER_INPUT_COMMANDS_EOF
         if [ "${{ inputs.use_systemd_nspawn }}x" != "x" -a "${{ inputs.use_systemd_nspawn }}x" != "nox" ]; then
             sudo apt-get install -y systemd-container
-            sudo systemd-nspawn -q -a --bind=${script_dir}:${chroot_script_dir} -D ${{ steps.mount_image.outputs.mount }} ${shell_path} ${shell_opts} ${chroot_script_dir}/commands.sh
+            sudo -E systemd-nspawn -q -a --bind=${script_dir}:${chroot_script_dir} -D ${{ steps.mount_image.outputs.mount }} ${{ inputs.systemd_nspawn_options }} ${shell_path} ${shell_opts} ${chroot_script_dir}/commands.sh
         else
-            sudo chroot ${{ steps.mount_image.outputs.mount }} ${shell_path} ${shell_opts} ${chroot_script_dir}/commands.sh
+            sudo -E chroot ${{ steps.mount_image.outputs.mount }} ${shell_path} ${shell_opts} ${chroot_script_dir}/commands.sh
         fi
         rc=$?
         [ -f ${script_dir}/github_env.sh ] && \
