@@ -238,7 +238,7 @@ runs:
         exit $rc
       shell: bash
     - name: Copy artifacts within image
-      if: ${{ always() && inputs.copy_artifacts_on_fail == 'yes' || steps.runcmd.conclusion != 'failure' }}
+      if: ${{ always() && !cancelled() && inputs.copy_artifacts_on_fail == 'yes' || steps.runcmd.conclusion != 'failure' }}
       run: |
         case "${{ inputs.debug }}" in
         yes|true)
