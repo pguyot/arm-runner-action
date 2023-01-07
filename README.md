@@ -240,6 +240,13 @@ with some shells that come packaged under a different package name.
 For example, to use `ksh93` as shell, set `shell` to `ksh93` and
 `shell_package` to `ksh`.
 
+#### `user`
+
+User to run commands within the image. It must exists.
+By default, commands are run with user 0 (root).
+Unless you are using `systemd-nspawn`, you can also specify the group with
+the `user:group` syntax.
+
 #### `exit_on_fail`
 
 Exit immediately if a command exits with a non-zero status. Default is to exit.

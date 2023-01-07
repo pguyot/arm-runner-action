@@ -1,0 +1,48 @@
+name: Test user option
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        id | grep -c runner
+    - uses: actions/checkout@v3
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        commands: |
+          id | grep -c root
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        user: nobody
+        commands: |
+          id | grep -c nobody
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        user: nobody:lp
+        commands: |
+          id | grep -c lp
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        user: nobody
+        use_systemd_nspawn: true
+        commands: |
+          id | grep -c nobody
+    - id: unknown_user
+      continue-on-error: true
+      uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        user: unknown_user
+        commands: |
+          id
+    - name: Report unexpected success
+      if: ${{ steps.unknown_user.outcome == 'success' }}
+      run: |
+        echo "Action is expected to fail"
+        exit 1
