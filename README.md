@@ -100,9 +100,9 @@ The following values are allowed:
 - `dietpi:rpi_armv7_bullseye`
 - `dietpi:rpi_armv8_bullseye` (arm64)
 - `raspi_1_bullseye:20220121` (armel)
-- `raspi_2_bullseye:20220121` (armhf)
-- `raspi_3_bullseye:20220121` (arm64)
-- `raspi_4_bullseye:20220121` (arm64)
+- `raspi_2_bullseye:20230102` (armhf)
+- `raspi_3_bullseye:20230102` (arm64)
+- `raspi_4_bullseye:20230102` (arm64)
 
 The input parameter also accepts any custom URL beginning in http(s)://...
 
