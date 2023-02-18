@@ -47,13 +47,13 @@ case $1 in
     "raspi_1_bullseye:20220121")
         url=https://raspi.debian.net/tested/20220121_raspi_1_bullseye.img.xz
     ;;
-    "raspi_2_bullseye:20220121")
+    "raspi_2_bullseye:20230102")
         url=https://raspi.debian.net/tested/20230102_raspi_2_bullseye.img.xz
     ;;
-    "raspi_3_bullseye:20220121")
+    "raspi_3_bullseye:20230102")
         url=https://raspi.debian.net/tested/20230102_raspi_3_bullseye.img.xz
     ;;
-    "raspi_4_bullseye:20220121")
+    "raspi_4_bullseye:20230102")
         url=https://raspi.debian.net/tested/20230102_raspi_4_bullseye.img.xz
     ;;
     https:/*|http:/*)
