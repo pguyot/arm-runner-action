@@ -3,7 +3,7 @@ set -uo pipefail
 
 case $1 in
     "raspbian_lite:latest")
-        url=https://downloads.raspberrypi.org/raspbian_lite_latest
+        url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2023-05-03/2023-05-03-raspios-bullseye-armhf-lite.img.xz
     ;;
     "raspios_lite:latest")
         url=https://downloads.raspberrypi.org/raspios_lite_armhf_latest
