@@ -35,7 +35,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: |
-m        wget https://cdimage.ubuntu.com/releases/22.04.2/release/ubuntu-22.04.2-preinstalled-server-arm64+raspi.img.xz
+        wget https://cdimage.ubuntu.com/releases/22.04.2/release/ubuntu-22.04.2-preinstalled-server-arm64+raspi.img.xz
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         base_image: file://localhost${GITHUB_WORKSPACE}ubuntu-22.04.2-preinstalled-server-arm64+raspi.img.xz
