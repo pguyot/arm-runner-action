@@ -24,7 +24,9 @@ jobs:
       with:
         optimize_image: no
         commands: |
-          apt install -y fortunes-off
+          set -e
+          test ! -f /usr/games/fortune
+          apt install -y fortune-mod
 
     - name: Move and rename image with dependencies
       if: steps.cache.outputs.cache-hit != 'true'
@@ -35,4 +37,4 @@ jobs:
       with:
         base_image: file://${RUNNER_TEMP}/test_cache.img
         commands: |
-          fortune -o
+          /usr/games/fortune
