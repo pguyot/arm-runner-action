@@ -26,7 +26,7 @@ jobs:
         commands: |
           set -e
           test ! -f /usr/games/fortune
-          apt install -y fortune-mod
+          apt install -y fortunes fortune-mod
 
     - name: Move and rename image with dependencies
       if: steps.cache.outputs.cache-hit != 'true'
