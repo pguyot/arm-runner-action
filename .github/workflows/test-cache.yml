@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-   - uses: actions/cache@v3
-     id: cache
-     with:
-       path: test_cache.img
-       key: ${{ hashFiles('**/test-cache.yml') }}-${{'*.sh'}}
+    - uses: actions/cache@v3
+      id: cache
+      with:
+        path: test_cache.img
+        key: ${{ hashFiles('**/test-cache.yml') }}-${{'*.sh'}}
 
     - uses: ./ # pguyot/arm-runner-action@HEAD
       if: steps.cache.outputs.cache-hit != 'true'
