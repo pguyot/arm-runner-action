@@ -59,6 +59,9 @@ case $1 in
     https:/*|http:/*)
         url="$1"
     ;;
+    file:///*|file://localhost/*)
+        url="$1"
+    ;;
     *)
         echo "Unknown image $1"
         exit 1
@@ -69,7 +72,16 @@ tempdir=${RUNNER_TEMP:-/home/actions/temp}/arm-runner
 rm -rf ${tempdir}
 mkdir -p ${tempdir}
 cd ${tempdir}
-wget --trust-server-names --content-disposition -q ${url}
+case ${url} in
+    file://localhost/*)
+        cp ${url#file://localhost/} .
+    ;;
+    file:///*)
+        cp ${url#file:///} .
+    ;;
+    https:/*|http:/*)
+        wget --trust-server-names --content-disposition -q ${url}
+esac
 case `echo *` in
     *.zip)
         unzip -u *
