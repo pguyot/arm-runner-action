@@ -74,10 +74,10 @@ mkdir -p ${tempdir}
 cd ${tempdir}
 case ${url} in
     file://localhost/*)
-        cp ${url#file://localhost/} .
+        cp ${url#file://localhost} .
     ;;
     file:///*)
-        cp ${url#file:///} .
+        cp ${url#file://} .
     ;;
     https:/*|http:/*)
         wget --trust-server-names --content-disposition -q ${url}
