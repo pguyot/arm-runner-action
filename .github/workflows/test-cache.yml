@@ -22,6 +22,7 @@ jobs:
       id: install_deps
       if: steps.cache.outputs.cache-hit != 'true'
       with:
+        optimize_image: no
         commands: |
           apt install -y fortunes-off
 
