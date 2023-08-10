@@ -19,6 +19,7 @@ jobs:
         key: ${{ hashFiles('**/test-cache.yml') }}-${{'*.sh'}}
 
     - uses: ./ # pguyot/arm-runner-action@HEAD
+      id: install_deps
       if: steps.cache.outputs.cache-hit != 'true'
       with:
         commands: |
@@ -27,10 +28,10 @@ jobs:
     - name: Rename image with dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        mv ${{ steps.build_image.outputs.image }} test_cache.img
+        mv ${{ steps.install_deps.outputs.image }} test_cache.img
 
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
-        base_image: file://${GITHUB_WORKSPACE}test_cache.img
+        base_image: file://${GITHUB_WORKSPACE}/test_cache.img
         commands: |
           fortune -o

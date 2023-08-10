@@ -38,7 +38,7 @@ jobs:
         wget https://raspi.debian.net/tested/20220121_raspi_1_bullseye.img.xz
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
-        base_image: file://localhost${GITHUB_WORKSPACE}20220121_raspi_1_bullseye.img.xz
+        base_image: file://localhost${GITHUB_WORKSPACE}/20220121_raspi_1_bullseye.img.xz
         commands: |
           cat /etc/os-release
           uname -a
@@ -51,7 +51,7 @@ jobs:
         wget https://raspi.debian.net/tested/20220121_raspi_1_bullseye.img.xz
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
-        base_image: file://${GITHUB_WORKSPACE}20220121_raspi_1_bullseye.img.xz
+        base_image: file://${GITHUB_WORKSPACE}/20220121_raspi_1_bullseye.img.xz
         commands: |
           cat /etc/os-release
           uname -a
