@@ -22,6 +22,7 @@ jobs:
       id: install_deps
       if: steps.cache.outputs.cache-hit != 'true'
       with:
+        # we don't want to optimize as it's two-stage
         optimize_image: no
         commands: |
           set -e
@@ -38,4 +39,4 @@ jobs:
       with:
         base_image: file://$RUNNER_TEMP/test_cache.img
         commands: |
-          /usr/games/fortune /usr/share/games/fortunes/fortunes | cowsay
+          /usr/games/fortune /usr/share/games/fortunes/fortunes | /usr/games/cowsay
