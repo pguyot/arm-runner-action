@@ -27,6 +27,7 @@ jobs:
         commands: |
           set -e
           test ! -f /usr/games/fortune
+          apt update
           apt install -y fortunes-min fortune-mod
 
     - name: Move and rename image with dependencies
