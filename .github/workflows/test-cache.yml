@@ -23,12 +23,11 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
       with:
         optimize_image: no
-        base_image: https://raspi.debian.net/tested/20220121_raspi_1_bookworm.img.xz
         commands: |
           set -e
           test ! -f /usr/games/fortune
           apt update
-          apt install -y fortunes-min fortune-mod
+          apt install -y fortunes fortune-mod
 
     - name: Move and rename image with dependencies
       if: steps.cache.outputs.cache-hit != 'true'
@@ -39,4 +38,5 @@ jobs:
       with:
         base_image: file://${RUNNER_TEMP}/test_cache.img
         commands: |
-          /usr/games/fortune -a
+          find /usr/share/games/fortune
+          /usr/games/fortune
