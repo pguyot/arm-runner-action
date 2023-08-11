@@ -106,6 +106,8 @@ The following values are allowed:
 
 The input parameter also accepts any custom URL beginning in http(s)://...
 
+It also accepts file:// URIs, which can be useful for caching steps in multistep builds. See [.github/workflows/test-cache.yml](cache test) example.
+
 More images will be added, eventually. Feel free to submit PRs.
 
 #### `image_additional_mb`
