@@ -19,13 +19,39 @@ jobs:
           cat /etc/os-release
           uname -a
 
-  build_ubuntu_22_04:
+  build_ubuntu_23_04:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
-        base_image: https://cdimage.ubuntu.com/releases/22.04.2/release/ubuntu-22.04.2-preinstalled-server-arm64+raspi.img.xz
+        base_image: https://cdimage.ubuntu.com/releases/23.04/release/ubuntu-23.04-preinstalled-server-arm64+raspi.img.xz
+        commands: |
+          cat /etc/os-release
+          uname -a
+
+  localhost_file_uri:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+        wget https://raspi.debian.net/tested/20220121_raspi_1_bullseye.img.xz
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        base_image: file://localhost${GITHUB_WORKSPACE}/20220121_raspi_1_bullseye.img.xz
+        commands: |
+          cat /etc/os-release
+          uname -a
+
+  file_uri:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+        wget https://raspi.debian.net/tested/20220121_raspi_1_bullseye.img.xz
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        base_image: file://${GITHUB_WORKSPACE}/20220121_raspi_1_bullseye.img.xz
         commands: |
           cat /etc/os-release
           uname -a
