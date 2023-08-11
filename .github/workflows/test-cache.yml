@@ -27,12 +27,7 @@ jobs:
           set -e
           test ! -f /usr/games/fortune
           apt update
-          apt install -y fortunes-min fortune-mod
-          # db is not installed at the proper path
-          if [ ! -d /usr/share/games/fortune ]; then
-            ln -s /usr/share/games/fortunes /usr/share/games/fortune
-          fi
-          find /usr/share/games
+          apt install -y fortunes-min fortune
 
     - name: Move and rename image with dependencies
       if: steps.cache.outputs.cache-hit != 'true'
@@ -43,5 +38,4 @@ jobs:
       with:
         base_image: file://$RUNNER_TEMP/test_cache.img
         commands: |
-          find /usr/share/games
-          /usr/games/fortune
+          /usr/games/fortune /usr/share/games/fortunes/fortunes
