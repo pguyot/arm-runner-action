@@ -8,6 +8,13 @@ rootpartition=$4
 
 if [ $# -ge 5 ]; then
     bootpartition=$5
+    if [ "x$rootpartition" = "x$bootpartition" ]; then
+        echo "Boot partition cannot be equal to root partition"
+        if [ "x$bootpartition" = "x1" ]; then
+            echo "Forgot to unset bootpartition ?"
+        fi
+        exit 1
+    fi
 else
     bootpartition=
 fi
