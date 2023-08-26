@@ -183,17 +183,24 @@ Some software checks for features using `/proc/cpuinfo` and this option can be
 used to trick them. The path is relative to the action (to use pre-defined
 settings) or to the local repository.
 
-Bundled with the action are the following files:
-- `cpuinfo/raspberrypi_4b`
-- `cpuinfo/raspberrypi_3b` (with a 32 bits system)
-- `cpuinfo/raspberrypi_zero_w`
-- `cpuinfo/raspberrypi_zero2_w` (with a 32 bits system)
-- `cpuinfo/raspberrypi_zero2_w_arm64` (with a 64 bits system)
+Bundled with the action are the following 32 bits CPU infos:
+-  `cpuinfo/raspberrypi_zero_w`
+-  `cpuinfo/raspberrypi_3b` (requires `cortex-a7` cpu)
+-  `cpuinfo/raspberrypi_zero2_w` (requires `cortex-a7` cpu)
+
+As well as the following 64 bits CPU infos:
+-  `cpuinfo/raspberrypi_4b`
+-  `cpuinfo/raspberrypi_zero2_w_arm64`
 
 On real hardware, the `/proc/cpuinfo` file content depends on the CPU being
 used in 32 bits or 64 bits mode, which in turn depends on the base image.
 Consequently, you may want to use `cpuinfo/raspberrypi_zero2_w_arm64` for
 64 bits builds and `cpuinfo/raspberrypi_zero2_w` for 32 bits builds.
+
+To avoid illegal instruction crashes, the `cpu_info` option must match what is
+passed to `cpu` option. In particular, when using 32 bits `cpu_info`, the
+default emulated CPU for 32 bits may not work and you should set `cpu` option
+to `cortex-a7`.
 
 #### `optimize_image`
 
