@@ -85,24 +85,34 @@ the latest image can change with new releases.
 
 The following values are allowed:
 
-- `raspbian_lite:2020-02-13`
-- `raspbian_lite:latest`
-- `raspios_lite:2021-03-04`
-- `raspios_lite:2021-05-07`
-- `raspios_lite:2021-10-30`
-- `raspios_lite:2022-01-28`
-- `raspios_lite:2022-04-04`
-- `raspios_lite:latest` (armhf build, *default*)
-- `raspios_lite_arm64:2022-01-28` (arm64)
-- `raspios_lite_arm64:2022-04-04` (arm64)
-- `raspios_lite_arm64:latest` (arm64)
-- `dietpi:rpi_armv6_bullseye`
-- `dietpi:rpi_armv7_bullseye`
-- `dietpi:rpi_armv8_bullseye` (arm64)
-- `raspi_1_bullseye:20220121` (armel)
-- `raspi_2_bullseye:20230102` (armhf)
-- `raspi_3_bullseye:20230102` (arm64)
-- `raspi_4_bullseye:20230102` (arm64)
+-   `raspbian_lite:2020-02-13`
+-   `raspbian_lite:latest`
+-   `raspios_lite:2021-03-04`
+-   `raspios_lite:2021-05-07`
+-   `raspios_lite:2021-10-30`
+-   `raspios_lite:2022-01-28`
+-   `raspios_lite:2022-04-04`
+-   `raspios_lite:2023-05-03`
+-   `raspios_lite:latest` (armhf build, *default*)
+-   `raspios_oldstable_lite:2023-05-03`
+-   `raspios_lite_arm64:2022-01-28` (arm64)
+-   `raspios_lite_arm64:2022-04-04` (arm64)
+-   `raspios_lite_arm64:2023-05-03` (arm64)
+-   `raspios_lite_arm64:latest` (arm64)
+-   `dietpi:rpi_armv6_bullseye`
+-   `dietpi:rpi_armv7_bullseye`
+-   `dietpi:rpi_armv8_bullseye` (arm64)
+-   `raspi_1_bullseye:20220121` (armel)
+-   `raspi_2_bullseye:20230102` (armhf)
+-   `raspi_3_bullseye:20230102` (arm64)
+-   `raspi_4_bullseye:20230102` (arm64)
+-   `raspi_1_bookworm:20230612` (armel)
+-   `raspi_2_bookworm:20230102` (armhf)
+-   `raspi_2_bookworm:20230612` (armhf)
+-   `raspi_3_bookworm:20230102` (arm64)
+-   `raspi_3_bookworm:20230612` (arm64)
+-   `raspi_4_bookworm:20230101` (arm64)
+-   `raspi_4_bookworm:20230612` (arm64)
 
 The input parameter also accepts any custom URL beginning in http(s)://...
 
@@ -127,11 +137,11 @@ Raspberry Pi models. Code compiled for `arm1176` can be run on later 32 bits
 CPUs.
 
 The following values are specially processed:
-- `arm1176` equivalent to `arm1176:cortex-a53`.
-- `cortex-a7` equivalent to `cortex-a7:cortex-a53`. Optimized for later Pi
-   models (Pi 3/Pi 4 and Pi Zero 2). Not suitable for Pi 1/Pi 2/Pi Zero.
-- `cortex-a8` equivalent to `cortex-a8:max`.
-- `cortex-a53` equivalent to `max:cortex-a53`.
+-   `arm1176` equivalent to `arm1176:cortex-a53`.
+-   `cortex-a7` equivalent to `cortex-a7:cortex-a53`. Optimized for later Pi
+    models (Pi 3/Pi 4 and Pi Zero 2). Not suitable for Pi 1/Pi 2/Pi Zero.
+-   `cortex-a8` equivalent to `cortex-a8:max`.
+-   `cortex-a53` equivalent to `max:cortex-a53`.
 
 Some software uses the output of `uname -m` or equivalent. This command is
 directly driven by this `cpu` option. You might want to compile 32 bits
@@ -184,13 +194,13 @@ used to trick them. The path is relative to the action (to use pre-defined
 settings) or to the local repository.
 
 Bundled with the action are the following 32 bits CPU infos:
--  `cpuinfo/raspberrypi_zero_w`
--  `cpuinfo/raspberrypi_3b` (requires `cortex-a7` cpu)
--  `cpuinfo/raspberrypi_zero2_w` (requires `cortex-a7` cpu)
+-   `cpuinfo/raspberrypi_zero_w`
+-   `cpuinfo/raspberrypi_3b` (requires `cortex-a7` cpu)
+-   `cpuinfo/raspberrypi_zero2_w` (requires `cortex-a7` cpu)
 
 As well as the following 64 bits CPU infos:
--  `cpuinfo/raspberrypi_4b`
--  `cpuinfo/raspberrypi_zero2_w_arm64`
+-   `cpuinfo/raspberrypi_4b`
+-   `cpuinfo/raspberrypi_zero2_w_arm64`
 
 On real hardware, the `/proc/cpuinfo` file content depends on the CPU being
 used in 32 bits or 64 bits mode, which in turn depends on the base image.
@@ -350,8 +360,8 @@ the base image.
 
 Real world examples include:
 
-- [pguyot/wm8960](https://github.com/pguyot/wm8960/blob/master/.github/workflows/arm-runner.yml) : compilation and tests
-- [nabaztag2018/pynab](https://github.com/nabaztag2018/pynab/blob/master/.github/workflows/arm-runner.yml) : compilation, tests and disk image.
+-   [pguyot/wm8960](https://github.com/pguyot/wm8960/blob/master/.github/workflows/arm-runner.yml) : compilation and tests
+-   [nabaztag2018/pynab](https://github.com/nabaztag2018/pynab/blob/master/.github/workflows/arm-runner.yml) : compilation, tests and disk image.
 
 ## Releases
 

@@ -1,0 +1,53 @@
+name: Test base images
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build_base_images:
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - raspbian_lite:latest
+          - raspios_lite:latest
+          - raspios_lite_arm64:latest
+          - raspbian_lite:2020-02-13
+          - raspios_lite:2021-03-04
+          - raspios_lite:2021-05-07
+          - raspios_lite:2021-10-30
+          - raspios_lite:2022-01-28
+          - raspios_lite:2022-04-04
+          - raspios_lite:2023-05-03
+          - raspios_oldstable_lite:2023-05-03
+          - raspios_lite_arm64:2023-05-03
+          - raspios_lite_arm64:2022-01-28
+          - raspios_lite_arm64:2022-04-04
+          - dietpi:rpi_armv6_bullseye
+          - dietpi:rpi_armv7_bullseye
+          - dietpi:rpi_armv8_bullseye
+          - raspi_1_bullseye:20220121
+          - raspi_2_bullseye:20230102
+          - raspi_3_bullseye:20230102
+          - raspi_4_bullseye:20230102
+          - raspi_1_bookworm:20230612
+          - raspi_2_bookworm:20230102
+          - raspi_2_bookworm:20230612
+          - raspi_3_bookworm:20230102
+          - raspi_3_bookworm:20230612
+          - raspi_4_bookworm:20230101
+          - raspi_4_bookworm:20230612
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        base_image: ${{ matrix.image }}
+        cpu: cortex-a7
+        commands: |
+          cat /etc/os-release
+          uname -a
