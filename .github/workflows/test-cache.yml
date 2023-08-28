@@ -1,0 +1,42 @@
+name: Test cache
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test_cache:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/cache@v3
+      id: cache
+      with:
+        path: $RUNNER_TEMP/test_cache.img
+        key: ${{ hashFiles('**/test-cache.yml') }}-${{ hashFiles('**/*.sh') }}
+
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      id: install_deps
+      if: steps.cache.outputs.cache-hit != 'true'
+      with:
+        # we don't want to optimize as it's two-stage
+        optimize_image: no
+        commands: |
+          set -e
+          test ! -f /usr/games/fortune
+          apt update
+          apt install -y fortunes-min fortune cowsay
+
+    - name: Move and rename image with dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        mv ${{ steps.install_deps.outputs.image }} $RUNNER_TEMP/test_cache.img
+
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        base_image: file://$RUNNER_TEMP/test_cache.img
+        commands: |
+          /usr/games/fortune /usr/share/games/fortunes/fortunes | /usr/games/cowsay
