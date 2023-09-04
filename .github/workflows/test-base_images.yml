@@ -43,7 +43,7 @@ jobs:
           - raspi_4_bookworm:20230612
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         base_image: ${{ matrix.image }}

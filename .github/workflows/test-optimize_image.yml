@@ -13,7 +13,7 @@ jobs:
     outputs:
       imgsize: ${{ steps.compress.outputs.imgsize }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
       id: optimized
       with:
@@ -33,7 +33,7 @@ jobs:
     outputs:
       imgsize: ${{ steps.compress.outputs.imgsize }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
       id: unoptimized
       with:
