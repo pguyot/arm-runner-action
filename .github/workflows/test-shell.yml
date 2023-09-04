@@ -11,7 +11,7 @@ jobs:
   build_ksh93:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         shell: ksh93
@@ -22,7 +22,7 @@ jobs:
   build_options_full_path:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         shell: /bin/bash -o pipefail
@@ -31,7 +31,7 @@ jobs:
   build_options_not_full_path:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         shell: bash -o pipefail

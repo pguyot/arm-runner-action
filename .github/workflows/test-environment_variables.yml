@@ -12,7 +12,7 @@ jobs:
   test_chroot:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         commands: |
@@ -20,7 +20,7 @@ jobs:
   test_systemd_nspawn:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         use_systemd_nspawn: true

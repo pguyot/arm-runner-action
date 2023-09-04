@@ -11,7 +11,7 @@ jobs:
   build_debian_bullseye:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         base_image: https://raspi.debian.net/tested/20220121_raspi_1_bullseye.img.xz
@@ -22,7 +22,7 @@ jobs:
   build_ubuntu_23_04:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         base_image: https://cdimage.ubuntu.com/releases/23.04/release/ubuntu-23.04-preinstalled-server-arm64+raspi.img.xz
@@ -33,7 +33,7 @@ jobs:
   localhost_file_uri:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - run: |
         wget https://raspi.debian.net/tested/20220121_raspi_1_bullseye.img.xz
     - uses: ./ # pguyot/arm-runner-action@HEAD
@@ -46,7 +46,7 @@ jobs:
   file_uri:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - run: |
         wget https://raspi.debian.net/tested/20220121_raspi_1_bullseye.img.xz
     - uses: ./ # pguyot/arm-runner-action@HEAD
