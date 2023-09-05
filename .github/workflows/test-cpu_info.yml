@@ -24,6 +24,23 @@ jobs:
         grep -c ARMv6 cpuinfo.txt
         grep -c "CPU architecture: 7" cpuinfo.txt
         grep -c 6769746875620000 cpuinfo.txt
+  test_3b_systemd_nspawn:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        cpu_info: cpuinfo/raspberrypi_3b
+        use_systemd_nspawn: true
+        bind_mount_repository: true
+        cpu: cortex-a7
+        commands: |
+            cat /proc/cpuinfo > cpuinfo.txt
+    - name: Test content of cpuinfo
+      run: |
+        grep -c ARMv7 cpuinfo.txt
+        grep -c "CPU architecture: 7" cpuinfo.txt
+        grep -c 676974687562003b cpuinfo.txt
   test_3b:
     runs-on: ubuntu-latest
     steps:
