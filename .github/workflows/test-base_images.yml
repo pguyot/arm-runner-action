@@ -30,17 +30,17 @@ jobs:
           - dietpi:rpi_armv6_bullseye
           - dietpi:rpi_armv7_bullseye
           - dietpi:rpi_armv8_bullseye
+          - dietpi:rpi_armv6_bookworm
+          - dietpi:rpi_armv7_bookworm
+          - dietpi:rpi_armv8_bookworm
           - raspi_1_bullseye:20220121
           - raspi_2_bullseye:20230102
           - raspi_3_bullseye:20230102
           - raspi_4_bullseye:20230102
-          - raspi_1_bookworm:20230612
-          - raspi_2_bookworm:20230102
-          - raspi_2_bookworm:20230612
-          - raspi_3_bookworm:20230102
-          - raspi_3_bookworm:20230612
-          - raspi_4_bookworm:20230101
-          - raspi_4_bookworm:20230612
+          - raspi_1_bookworm:20231109
+          - raspi_2_bookworm:20231109
+          - raspi_3_bookworm:20231109
+          - raspi_4_bookworm:20231109
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4

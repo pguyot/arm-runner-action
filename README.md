@@ -102,17 +102,17 @@ The following values are allowed:
 -   `dietpi:rpi_armv6_bullseye`
 -   `dietpi:rpi_armv7_bullseye`
 -   `dietpi:rpi_armv8_bullseye` (arm64)
+-   `dietpi:rpi_armv6_bookworm`
+-   `dietpi:rpi_armv7_bookworm`
+-   `dietpi:rpi_armv8_bookworm` (arm64)
 -   `raspi_1_bullseye:20220121` (armel)
 -   `raspi_2_bullseye:20230102` (armhf)
 -   `raspi_3_bullseye:20230102` (arm64)
 -   `raspi_4_bullseye:20230102` (arm64)
--   `raspi_1_bookworm:20230612` (armel)
--   `raspi_2_bookworm:20230102` (armhf)
--   `raspi_2_bookworm:20230612` (armhf)
--   `raspi_3_bookworm:20230102` (arm64)
--   `raspi_3_bookworm:20230612` (arm64)
--   `raspi_4_bookworm:20230101` (arm64)
--   `raspi_4_bookworm:20230612` (arm64)
+-   `raspi_1_bookworm:20231109` (armel)
+-   `raspi_2_bookworm:20231109` (armhf)
+-   `raspi_3_bookworm:20231109` (arm64)
+-   `raspi_4_bookworm:20231109` (arm64)
 
 The input parameter also accepts any custom URL beginning in http(s)://...
 
