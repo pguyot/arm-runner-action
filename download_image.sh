@@ -45,46 +45,46 @@ case $1 in
         url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2023-05-03/2023-05-03-raspios-bullseye-arm64-lite.img.xz
     ;;
     "dietpi:rpi_armv6_bullseye")
-        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv6-Bullseye.7z
+        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv6-Bullseye.img.xz
     ;;
     "dietpi:rpi_armv7_bullseye")
-        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv7-Bullseye.7z
+        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv7-Bullseye.img.xz
     ;;
     "dietpi:rpi_armv8_bullseye")
-        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv8-Bullseye.7z
+        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv8-Bullseye.img.xz
+    ;;
+    "dietpi:rpi_armv6_bookworm")
+        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv6-Bookworm.img.xz
+    ;;
+    "dietpi:rpi_armv7_bookworm")
+        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv7-Bookworm.img.xz
+    ;;
+    "dietpi:rpi_armv8_bookworm")
+        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv8-Bookworm.img.xz
     ;;
     "raspi_1_bullseye:20220121")
         url=https://raspi.debian.net/tested/20220121_raspi_1_bullseye.img.xz
     ;;
-    "raspi_1_bookworm:20230612")
-        url=https://raspi.debian.net/tested/20230612_raspi_1_bookworm.img.xz
+    "raspi_1_bookworm:20231109")
+        url=https://raspi.debian.net/tested/20231109_raspi_1_bookworm.img.xz
     ;;
     "raspi_2_bullseye:20230102")
         url=https://raspi.debian.net/tested/20230102_raspi_2_bullseye.img.xz
     ;;
-    "raspi_2_bookworm:20230102")
-        url=https://raspi.debian.net/tested/20230102_raspi_2_bookworm.img.xz
-    ;;
-    "raspi_2_bookworm:20230612")
-        url=https://raspi.debian.net/tested/20230612_raspi_2_bookworm.img.xz
+    "raspi_2_bookworm:20231109")
+        url=https://raspi.debian.net/tested/20231109_raspi_2_bookworm.img.xz
     ;;
     "raspi_3_bullseye:20230102")
         url=https://raspi.debian.net/tested/20230102_raspi_3_bullseye.img.xz
     ;;
-    "raspi_3_bookworm:20230102")
-        url=https://raspi.debian.net/tested/20230102_raspi_3_bookworm.img.xz
-    ;;
-    "raspi_3_bookworm:20230612")
-        url=https://raspi.debian.net/tested/20230612_raspi_3_bookworm.img.xz
+    "raspi_3_bookworm:20231109")
+        url=https://raspi.debian.net/tested/20231109_raspi_3_bookworm.img.xz
     ;;
     "raspi_4_bullseye:20230102")
         url=https://raspi.debian.net/tested/20230102_raspi_4_bullseye.img.xz
     ;;
-    "raspi_4_bookworm:20230101")
-        url=https://raspi.debian.net/tested/20230101_raspi_4_bookworm.img.xz
-    ;;
-    "raspi_4_bookworm:20230612")
-        url=https://raspi.debian.net/tested/20230612_raspi_4_bookworm.img.xz
+    "raspi_4_bookworm:20231109")
+        url=https://raspi.debian.net/tested/20231109_raspi_4_bookworm.img.xz
     ;;
     https:/*|http:/*)
         url="$1"
