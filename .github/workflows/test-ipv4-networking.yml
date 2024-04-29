@@ -1,0 +1,37 @@
+name: Test IPv4 networking
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - raspbian_lite:latest
+          - raspios_lite:latest
+          - dietpi:rpi_armv6_bullseye
+          - dietpi:rpi_armv7_bullseye
+          - dietpi:rpi_armv8_bullseye
+          - dietpi:rpi_armv6_bookworm
+          - dietpi:rpi_armv7_bookworm
+          - dietpi:rpi_armv8_bookworm
+    runs-on: ubuntu-latest
+    steps:
+    - name: Test native networking
+      run: |
+          ping -c 1 github.com || echo "Cannot ping from GitHub Action"
+          wget https://github.com/
+    - uses: actions/checkout@v4
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        base_image: ${{ matrix.image }}
+        cpu: cortex-a7
+        commands: |
+          ping -c 1 github.com || echo "Cannot ping from ARM runner action"
+          wget https://github.com/
