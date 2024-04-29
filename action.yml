@@ -123,8 +123,8 @@ runs:
         esac
         arm_cpu=${cpu%:*}
         aarch64_cpu=${cpu#*:}
-        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${arm_cpu} -O3 -s -o /usr/bin/qemu-arm-static0
-        sudo gcc -static ${{ github.action_path }}/qemu-wrapper.c -DQEMU_CPU=${aarch64_cpu} -O3 -s -o /usr/bin/qemu-aarch64-static0
+        sudo gcc -static ${GITHUB_ACTION_PATH}/qemu-wrapper.c -DQEMU_CPU=${arm_cpu} -O3 -s -o /usr/bin/qemu-arm-static0
+        sudo gcc -static ${GITHUB_ACTION_PATH}/qemu-wrapper.c -DQEMU_CPU=${aarch64_cpu} -O3 -s -o /usr/bin/qemu-aarch64-static0
         sudo update-binfmts --unimport qemu-arm
         sudo update-binfmts --unimport qemu-aarch64
         sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-arm /usr/bin/qemu-arm-static0 --magic '\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
@@ -132,12 +132,12 @@ runs:
 
     - name: Download base image
       run: |
-        bash ${{ github.action_path }}/download_image.sh ${{ inputs.base_image }}
+        bash ${GITHUB_ACTION_PATH}/download_image.sh ${{ inputs.base_image }}
       shell: bash
       id: download_image
     - name: Mount and optionally resize image
       run: |
-        sudo --preserve-env=GITHUB_OUTPUT bash ${{ github.action_path }}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }} ${{ inputs.use_systemd_nspawn }} ${{ inputs.rootpartition }} ${{ inputs.bootpartition }}
+        sudo --preserve-env=GITHUB_OUTPUT bash ${GITHUB_ACTION_PATH}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }} ${{ inputs.use_systemd_nspawn }} ${{ inputs.rootpartition }} ${{ inputs.bootpartition }}
       shell: bash
       id: mount_image
     - name: Mount CPU info
@@ -146,7 +146,7 @@ runs:
         if [ -e ${{ github.workspace }}/${{ inputs.cpu_info }} ]; then
           cpu_info_path=${{ github.workspace }}/${{ inputs.cpu_info }}
         else
-          cpu_info_path=${{ github.action_path }}/${{ inputs.cpu_info }}
+          cpu_info_path=${GITHUB_ACTION_PATH}/${{ inputs.cpu_info }}
         fi
         sudo mount --bind ${cpu_info_path} ${{ steps.mount_image.outputs.mount }}/proc/cpuinfo
       shell: bash
@@ -292,7 +292,7 @@ runs:
             sudo umount ${{ steps.mount_image.outputs.mount }}${repository_path}
         ;;
         esac
-        sudo bash ${{ github.action_path }}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} ${{ steps.download_image.outputs.image }} "${{ inputs.optimize_image }}" "${{ inputs.rootpartition }}"
+        sudo bash ${GITHUB_ACTION_PATH}/cleanup_image.sh ${{ steps.mount_image.outputs.loopdev }} ${{ steps.mount_image.outputs.mount }} ${{ steps.download_image.outputs.image }} "${{ inputs.optimize_image }}" "${{ inputs.rootpartition }}"
       shell: bash
     - name: Restore qemu wrapper
       if: always()
