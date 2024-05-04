@@ -21,6 +21,9 @@ jobs:
         optimize_image: yes
         commands: |
             cat /dev/random > /rand || rm /rand
+    - name: Check if contains all partitions
+      run: |
+        fdisk -l ${{ steps.optimized.outputs.image }}
     - name: Compress image
       id: compress
       run: |
