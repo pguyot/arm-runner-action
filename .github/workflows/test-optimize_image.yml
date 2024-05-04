@@ -28,6 +28,27 @@ jobs:
         gzip /home/actions/temp/optimized-image.img
         imgsize=`stat --printf="%s" /home/actions/temp/optimized-image.img.gz`
         echo "imgsize=${imgsize}" >> $GITHUB_OUTPUT
+  slimmed:
+    runs-on: ubuntu-latest
+    outputs:
+      imgsize: ${{ steps.compress.outputs.imgsize }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      id: slimmed
+      with:
+        base_image: raspios_lite:2021-05-07
+        optimize_image: yes
+        commands: |
+            apt-get -y --purge autoremove ".*python.*"
+            cat /dev/random > /rand || rm /rand
+    - name: Compress image
+      id: compress
+      run: |
+        mv ${{ steps.slimmed.outputs.image }} /home/actions/temp/slimmed-image.img
+        gzip /home/actions/temp/slimmed-image.img
+        imgsize=`stat --printf="%s" /home/actions/temp/slimmed-image.img.gz`
+        echo "imgsize=${imgsize}" >> $GITHUB_OUTPUT
   unoptimized:
     runs-on: ubuntu-latest
     outputs:
@@ -50,10 +71,12 @@ jobs:
         echo "imgsize=${imgsize}" >> $GITHUB_OUTPUT
   compare:
     runs-on: ubuntu-latest
-    needs: [optimized, unoptimized]
+    needs: [optimized, unoptimized, slimmed]
     steps:
     - name: Test image sizes
       run: |
         echo "Optimized size: ${{needs.optimized.outputs.imgsize}}"
+        echo "Slimmed size: ${{needs.slimmed.outputs.imgsize}}"
         echo "Unoptimized size: ${{needs.unoptimized.outputs.imgsize}}"
         test $(( ${{needs.unoptimized.outputs.imgsize}} - ${{needs.optimized.outputs.imgsize}} )) > 300000000
+        test $(( ${{needs.optimized.outputs.imgsize}} - ${{needs.slimmed.outputs.imgsize}} )) > 5000000
