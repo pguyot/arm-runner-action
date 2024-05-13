@@ -26,6 +26,10 @@ if [[ -d "${mount}" ]]; then
         (cat /dev/zero >"${mount}/zero.fill" 2>/dev/null || true); sync; rm -f "${mount}/zero.fill"
     fi
 
+    ps auxwww
+    mount
+    lsof || true
+
     umount "${mount}/dev/pts" || true
     umount "${mount}/dev" || true
     umount "${mount}/proc" || true
