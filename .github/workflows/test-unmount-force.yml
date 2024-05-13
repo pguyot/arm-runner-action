@@ -1,0 +1,24 @@
+name: Test unmount succeeds even if processes are still running
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        image_additional_mb: 1024
+        commands: |
+            sudo apt update -y
+            sudo apt install xvfb fluxbox -y
+            export DISPLAY=:0.0
+            Xvfb :0 -screen 0 1280x720x24 > /dev/null 2>&1 &
+            sleep 1
+            fluxbox > /dev/null 2>&1 &

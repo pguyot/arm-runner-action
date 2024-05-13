@@ -26,12 +26,12 @@ if [[ -d "${mount}" ]]; then
         (cat /dev/zero >"${mount}/zero.fill" 2>/dev/null || true); sync; rm -f "${mount}/zero.fill"
     fi
 
-    umount "${mount}/dev/pts" || true
-    umount "${mount}/dev" || true
-    umount "${mount}/proc" || true
-    umount "${mount}/sys" || true
-    umount "${mount}/boot" || true
-    umount "${mount}" || true
+    umount "${mount}/dev/pts" || fuser -ckv "${mount}/dev/pts" || umount --force --lazy "${mount}/dev/pts" || true
+    umount "${mount}/dev" || fuser -ckv "${mount}/dev" || umount --force --lazy "${mount}/dev" || true
+    umount "${mount}/proc" || fuser -ckv "${mount}/proc" || umount --force --lazy "${mount}/proc" || true
+    umount "${mount}/sys" || fuser -ckv "${mount}/sys" || umount --force --lazy "${mount}/sys" || true
+    umount "${mount}/boot" || fuser -ckv "${mount}/boot" || umount --force --lazy "${mount}/boot" || true
+    umount "${mount}" || fuser -ckv "${mount}" || umount --force --lazy "${mount}" || true
 
     if [[ "${optimize}x" == "x" || "${optimize}x" == "yesx" ]]; then
         rootfs_partnum=${rootpartition}
