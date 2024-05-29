@@ -1,0 +1,72 @@
+name: Test ArchLinux
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # ArchLinux does not come with an image combining root and boot partitions
+  # This shows how to proceed and could be combined with cache.
+  test_archlinux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Prepare ArchLinux image
+      run: |
+        # https://archlinuxarm.org/platforms/armv7/broadcom/raspberry-pi-2
+        # Install dependency
+        sudo apt-get -y install libarchive-tools
+        # Create a 1.5 GB image
+        dd if=/dev/zero of=$RUNNER_TEMP/archlinux.img bs=1M count=1536
+        # 2. At the fdisk prompt, delete old partitions and create a new one:
+        # using the sed comment trick of https://superuser.com/a/984637
+        sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk $RUNNER_TEMP/archlinux.img
+          o # clear the in memory partition table
+          n # new partition
+          p # primary partition
+          1 # partition number 1
+            # default - start at beginning of disk 
+          +200M # 200 MB boot partition
+          t # type
+          c # W95 FAT32 (LBA)
+          n # new partition
+          p # primary partition
+          2 # partion number 2
+            # default, start immediately after preceding partition
+            # default, extend partition to end of disk
+          w # write the partition table
+          q # and we're done
+        EOF
+        # create loopdev
+        loopdev=$(sudo losetup --find --show --partscan $RUNNER_TEMP/archlinux.img)
+        # 3. Create and mount the FAT filesystem:
+        sudo mkfs.vfat ${loopdev}p1
+        mkdir boot
+        sudo mount ${loopdev}p1 boot
+        # 4. Create and mount the ext4 filesystem:
+        sudo mkfs.ext4 ${loopdev}p2
+        mkdir root
+        sudo mount ${loopdev}p2 root
+        # 5. Download and extract the root filesystem:
+        wget http://os.archlinuxarm.org/os/ArchLinuxARM-rpi-armv7-latest.tar.gz
+        sudo -u root bsdtar -xpf ArchLinuxARM-rpi-armv7-latest.tar.gz -C root
+        sync
+        # 6. Move boot files to the first partition:
+        sudo mv root/boot/* boot
+        # 7. Unmount the two partitions:
+        sudo umount boot root
+        # Cleanup
+        rm ArchLinuxARM-rpi-armv7-latest.tar.gz
+        rmdir boot
+        rmdir root
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        base_image: file://$RUNNER_TEMP/archlinux.img
+        cpu: cortex-a53
+        commands: |
+            # 10. Initialize the pacman keyring and populate the Arch Linux ARM package signing keys:
+            pacman-key --init
+            pacman-key --populate archlinuxarm
