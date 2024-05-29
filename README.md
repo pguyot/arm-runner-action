@@ -118,6 +118,11 @@ The input parameter also accepts any custom URL beginning in http(s)://...
 
 It also accepts file:// URIs, which can be useful for caching steps in multistep builds. See [cache test example](.github/workflows/test-cache.yml).
 
+Unfortunately, Archlinux ARM does not publish images that are ready to be
+flashed. See [ArchLinux example](.github/workflows/test-archlinux.yml) as a
+workaround to build the image following the official ArchLinux ARM
+instructions.
+
 More images will be added, eventually. Feel free to submit PRs.
 
 #### `image_additional_mb`
