@@ -85,5 +85,37 @@ jobs:
             cat /proc/cpuinfo > cpuinfo.txt
     - name: Test content of cpuinfo
       run: |
+        cat cpuinfo.txt
         grep -c "CPU architecture: 8" cpuinfo.txt
         grep -c 676974687562004b cpuinfo.txt
+  test_5:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        cpu_info: cpuinfo/raspberrypi_5
+        bind_mount_repository: true
+        cpu: cortex-a53
+        commands: |
+            cat /proc/cpuinfo > cpuinfo.txt
+    - name: Test content of cpuinfo
+      run: |
+        grep -c "CPU architecture: 8" cpuinfo.txt
+        grep -c 6769746875620050 cpuinfo.txt
+  test_cortex_a76:
+    # Ubuntu 24.04 comes with qemu >= 8.2 which does emulate /proc/cpuinfo
+    # on aarch64
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        bind_mount_repository: true
+        cpu: cortex-a76
+        commands: |
+            cat /proc/cpuinfo > cpuinfo.txt
+    - name: Test content of cpuinfo
+      run: |
+        grep -c "model name	: ARMv8 Processor rev 0 (v8l)" cpuinfo.txt
+        grep -c "CPU architecture: 8" cpuinfo.txt
