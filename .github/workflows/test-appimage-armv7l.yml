@@ -1,0 +1,22 @@
+name: Test appimage armv7l
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        cpu: cortex-a8
+        commands: |
+            sudo apt install libfuse2 -y
+            wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-armhf.AppImage
+            chmod +x appimagetool-armhf.AppImage
+            ./appimagetool-armhf.AppImage --version
