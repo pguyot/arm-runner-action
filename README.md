@@ -142,11 +142,14 @@ Raspberry Pi models. Code compiled for `arm1176` can be run on later 32 bits
 CPUs.
 
 The following values are specially processed:
--   `arm1176` equivalent to `arm1176:cortex-a53`.
--   `cortex-a7` equivalent to `cortex-a7:cortex-a53`. Optimized for later Pi
-    models (Pi 3/Pi 4 and Pi Zero 2). Not suitable for Pi 1/Pi 2/Pi Zero.
--   `cortex-a8` equivalent to `cortex-a8:max`.
--   `cortex-a53` equivalent to `max:cortex-a53`.
+- `arm1176` equivalent to `arm1176:cortex-a53`.
+- `cortex-a7` equivalent to `cortex-a7:cortex-a53`. Optimized for later Pi
+  models (Pi 3/Pi 4 and Pi Zero 2). Not suitable for Pi 1/Pi 2/Pi Zero.
+- `cortex-a8` equivalent to `cortex-a8:max`.
+- `cortex-a53` equivalent to `max:cortex-a53`.
+- `cortex-a76` equivalent to `max:cortex-a76`. Note that this requires a newer
+  version of qemu, for example with runner ubuntu 24.04. See `test_cortex_a76`
+  in [cpu_info test](.github/workflows/test-cpu_info.yml).
 
 Some software uses the output of `uname -m` or equivalent. This command is
 directly driven by this `cpu` option. You might want to compile 32 bits
@@ -154,7 +157,7 @@ binaries with both `arm1176` which translates to `armv6l` and `cortex-a7` which
 translates to `armv7l`.
 
 For FPU and vector instruction sets, software usually automatically looks into
-`/proc/cpuinfo` or equivalent. This can be patched with `cpu_info` option.
+`/proc/cpuinfo` or equivalent. See `cpu_info` option below.
 
 Whether code is executed in 32 bits or 64 bits (and build generates 32 bits
 or 64 bits binaries) depend on the image. See _32 and 64 bits_ below.
@@ -192,20 +195,23 @@ from the target system.
 #### `cpu_info`
 
 Path to a fake cpu_info file to be used instead of `/proc/cpuinfo`. Default is
-to not fake the CPU (/proc/cpuinfo will report amd64 CPU of GitHub runner).
+to not fake the CPU. With older versions of qemu, including the one provided
+by ubuntu-latest as of this writing (ubuntu 22.04, qemu 6), `/proc/cpuinfo` is
+not intercepted and will report amd64 CPU of GitHub runner.
 
 Some software checks for features using `/proc/cpuinfo` and this option can be
 used to trick them. The path is relative to the action (to use pre-defined
 settings) or to the local repository.
 
 Bundled with the action are the following 32 bits CPU infos:
--   `cpuinfo/raspberrypi_zero_w`
--   `cpuinfo/raspberrypi_3b` (requires `cortex-a7` cpu)
--   `cpuinfo/raspberrypi_zero2_w` (requires `cortex-a7` cpu)
+- `cpuinfo/raspberrypi_zero_w`
+- `cpuinfo/raspberrypi_3b` (requires `cortex-a7` cpu)
+- `cpuinfo/raspberrypi_zero2_w` (requires `cortex-a7` cpu)
 
 As well as the following 64 bits CPU infos:
--   `cpuinfo/raspberrypi_4b`
--   `cpuinfo/raspberrypi_zero2_w_arm64`
+- `cpuinfo/raspberrypi_4b`
+- `cpuinfo/raspberrypi_zero2_w_arm64`
+- `cpuinfo/raspberrypi_5`
 
 On real hardware, the `/proc/cpuinfo` file content depends on the CPU being
 used in 32 bits or 64 bits mode, which in turn depends on the base image.
@@ -216,6 +222,10 @@ To avoid illegal instruction crashes, the `cpu_info` option must match what is
 passed to `cpu` option. In particular, when using 32 bits `cpu_info`, the
 default emulated CPU for 32 bits may not work and you should set `cpu` option
 to `cortex-a7`.
+
+qemu 8.2 and higher do intercept `/proc/cpuinfo` to report something related
+to the passed cpu option. So if you are running ubuntu-24.04 or if you install
+your own version of qemu-user-arm/aarch64, this option will be effectless.
 
 #### `optimize_image`
 

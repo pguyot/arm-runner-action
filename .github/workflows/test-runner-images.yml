@@ -1,0 +1,22 @@
+name: Test runner images
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: ["ubuntu-20.04", "ubuntu-22.04", "ubuntu-24.04", "ubuntu-latest"]
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        commands: |
+            test `uname -m` = 'armv6l'
