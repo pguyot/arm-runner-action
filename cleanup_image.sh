@@ -78,7 +78,7 @@ if [[ -d "${mount}" ]]; then
             if [[ "${part_type}" == "gpt" ]]; then
                 # for GPT partition table, leave space at the end for the secondary GPT 
                 # it requires 33 sectors, which is 16896 bytes
-                image_size=$((${image_size} + 16896))
+                image_size=$((image_size + 16896))
             fi            
             echo "Shrinking image from ${initial_image_size} to ${image_size} bytes."
             truncate -s "${image_size}" "${image}"
