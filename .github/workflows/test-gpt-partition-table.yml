@@ -13,9 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./ # pguyot/arm-runner-action@HEAD
+        id: expanded
         with:
           base_image: https://github.com/radxa/rock-pi-s-images-released/releases/download/rock-pi-s-v20210924/rockpis_debian_buster_server_arm64_20210924_0412-gpt.img.gz
           image_additional_mb: 2048
           cpu: cortex-a53
           commands: |
             test $(df -h --output=size / | tail -n 1) = '2.8G'
+      - name: check image
+        id: check_image
+        run: |
+          parted --script ${{ steps.expanded.outputs.image }} print free
