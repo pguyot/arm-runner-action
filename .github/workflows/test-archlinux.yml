@@ -19,8 +19,8 @@ jobs:
         # https://archlinuxarm.org/platforms/armv7/broadcom/raspberry-pi-2
         # Install dependency
         sudo apt-get -y install libarchive-tools
-        # Create a 1.5 GB image
-        dd if=/dev/zero of=$RUNNER_TEMP/archlinux.img bs=1M count=1536
+        # Create a 2 GB image
+        dd if=/dev/zero of=$RUNNER_TEMP/archlinux.img bs=1M count=2048
         # 2. At the fdisk prompt, delete old partitions and create a new one:
         # using the sed comment trick of https://superuser.com/a/984637
         sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk $RUNNER_TEMP/archlinux.img
