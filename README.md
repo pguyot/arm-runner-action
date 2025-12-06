@@ -60,10 +60,9 @@ Several scenarios are actually implemented as [tests](/.github/workflows).
 
 ### Host and guest OS
 
-The action has been tested with `ubuntu-latest` (currently equivalent to
-`ubuntu-20.04`) and `ubuntu-22.04`. It requires a Linux kernel that is
-compatible enough with the guest system as it uses qemu userland emulation. It
-relies on binfmt.
+The action is tested with `ubuntu-22.04`, `ubuntu-24.04`, and
+`ubuntu-latest`. It requires a Linux kernel that is compatible enough with the
+guest system as it uses qemu userland emulation. It relies on binfmt.
 
 ### Commands
 
