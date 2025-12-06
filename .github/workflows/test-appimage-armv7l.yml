@@ -16,7 +16,8 @@ jobs:
       with:
         cpu: cortex-a8
         commands: |
-            sudo apt install libfuse2 -y
-            wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-armhf.AppImage
+            sudo apt install libfuse2t64 -y
+            wget https://github.com/AppImage/appimagetool/releases/download/1.9.1/appimagetool-armhf.AppImage
+            echo '42b61cba5495d8aaf418a5c9a015a49b85ad92efabcbd3c341f1540440e4e23d  appimagetool-armhf.AppImage' | sha256sum --check
             chmod +x appimagetool-armhf.AppImage
             ./appimagetool-armhf.AppImage --version

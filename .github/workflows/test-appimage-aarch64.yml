@@ -18,6 +18,7 @@ jobs:
         base_image: raspios_lite_arm64:latest
         commands: |
             sudo apt install libfuse2 -y
-            wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-aarch64.AppImage
+            wget https://github.com/AppImage/appimagetool/releases/download/1.9.1/appimagetool-aarch64.AppImage
+            echo 'f0837e7448a0c1e4e650a93bb3e85802546e60654ef287576f46c71c126a9158  appimagetool-aarch64.AppImage' | sha256sum --check
             chmod +x appimagetool-aarch64.AppImage
             ./appimagetool-aarch64.AppImage --version
