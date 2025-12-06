@@ -32,6 +32,7 @@ if [ ${additional_mb} -gt 0 ]; then
         sgdisk -e "${loopdev}"
     fi
     parted --script "${loopdev}" resizepart ${rootpartition} 100%
+    tune2fs -O ^orphan_file "${loopdev}p${rootpartition}"
     e2fsck -p -f "${loopdev}p${rootpartition}"
     resize2fs "${loopdev}p${rootpartition}"
     echo "Finished resizing disk image."

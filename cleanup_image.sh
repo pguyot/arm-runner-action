@@ -53,6 +53,7 @@ if [[ -d "${mount}" ]]; then
         echo "Image is using ${part_type} partition table"
 
         echo "Resizing root filesystem to minimal size."
+        tune2fs -O ^orphan_file "${rootdev}"
         e2fsck -p -f "${rootdev}"
         resize2fs -M "${rootdev}"
         rootfs_blocksize=$(tune2fs -l ${rootdev} | grep "^Block size" | awk '{print $NF}')
