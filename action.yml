@@ -99,6 +99,23 @@ runs:
       run: |
         sudo apt-get update && sudo apt-get install -y binfmt-support parted wget dosfstools zip
         (test -x /usr/bin/qemu-arm-static && test -x /usr/bin/qemu-aarch64-static) || sudo apt install -y qemu-user-static
+        if dpkg --compare-versions "$(dpkg-query -W -f '${Version}' e2fsprogs)" lt 1.47; then
+            # Install e2fsprogs 1.47
+            e2fsprogs_build_dir="${RUNNER_TEMP:-/tmp}/arm-runner-e2fsprogs"
+            rm -rf "${e2fsprogs_build_dir}"
+            mkdir -p "${e2fsprogs_build_dir}"
+            cd "${e2fsprogs_build_dir}"
+            wget https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.47.3/e2fsprogs-1.47.3.tar.xz
+            wget https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.47.3/sha256sums.asc
+            grep '  e2fsprogs-1.47.3.tar.xz$' sha256sums.asc | sha256sum --check
+            tar xJf e2fsprogs-1.47.3.tar.xz
+            cd e2fsprogs-1.47.3/
+            ./configure
+            make -j3
+            sudo make install
+            cd /
+            rm -rf "${e2fsprogs_build_dir}"
+        fi
       shell: bash
     - name: Install qemu wrapper
       shell: bash
