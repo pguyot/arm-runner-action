@@ -99,12 +99,18 @@ The following values are allowed:
 -   `raspios_lite_arm64:2022-04-04` (arm64)
 -   `raspios_lite_arm64:2023-05-03` (arm64)
 -   `raspios_lite_arm64:latest` (arm64)
--   `dietpi:rpi_armv6_bullseye`
--   `dietpi:rpi_armv7_bullseye`
--   `dietpi:rpi_armv8_bullseye` (arm64)
 -   `dietpi:rpi_armv6_bookworm`
 -   `dietpi:rpi_armv7_bookworm`
 -   `dietpi:rpi_armv8_bookworm` (arm64)
+-   `dietpi:rpi5_armv8_bookworm` (arm64)
+-   `dietpi:rpi_armv6_trixie`
+-   `dietpi:rpi_armv7_trixie`
+-   `dietpi:rpi_armv8_trixie` (arm64)
+-   `dietpi:rpi5_armv8_trixie` (arm64)
+-   `dietpi:rpi_armv6_forky`
+-   `dietpi:rpi_armv7_forky`
+-   `dietpi:rpi_armv8_forky` (arm64)
+-   `dietpi:rpi5_armv8_forky` (arm64)
 -   `raspi_1_bullseye:20220121` (armel)
 -   `raspi_2_bullseye:20230102` (armhf)
 -   `raspi_3_bullseye:20230102` (arm64)
