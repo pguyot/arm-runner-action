@@ -15,12 +15,18 @@ jobs:
         image:
           - raspbian_lite:latest
           - raspios_lite:latest
-          - dietpi:rpi_armv6_bullseye
-          - dietpi:rpi_armv7_bullseye
-          - dietpi:rpi_armv8_bullseye
           - dietpi:rpi_armv6_bookworm
           - dietpi:rpi_armv7_bookworm
           - dietpi:rpi_armv8_bookworm
+          - dietpi:rpi5_armv8_bookworm
+          - dietpi:rpi_armv6_trixie
+          - dietpi:rpi_armv7_trixie
+          - dietpi:rpi_armv8_trixie
+          - dietpi:rpi5_armv8_trixie
+          - dietpi:rpi_armv6_forky
+          - dietpi:rpi_armv7_forky
+          - dietpi:rpi_armv8_forky
+          - dietpi:rpi5_armv8_forky
     runs-on: ubuntu-latest
     steps:
     - name: Test native networking

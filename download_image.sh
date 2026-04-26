@@ -44,23 +44,41 @@ case $1 in
     "raspios_lite_arm64:2023-05-03")
         url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2023-05-03/2023-05-03-raspios-bullseye-arm64-lite.img.xz
     ;;
-    "dietpi:rpi_armv6_bullseye")
-        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv6-Bullseye.img.xz
-    ;;
-    "dietpi:rpi_armv7_bullseye")
-        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv7-Bullseye.img.xz
-    ;;
-    "dietpi:rpi_armv8_bullseye")
-        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv8-Bullseye.img.xz
-    ;;
     "dietpi:rpi_armv6_bookworm")
-        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv6-Bookworm.img.xz
+        url=https://dietpi.com/downloads/images/DietPi_RPi1-ARMv6-Bookworm.img.xz
     ;;
     "dietpi:rpi_armv7_bookworm")
-        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv7-Bookworm.img.xz
+        url=https://dietpi.com/downloads/images/DietPi_RPi2-ARMv7-Bookworm.img.xz
     ;;
     "dietpi:rpi_armv8_bookworm")
-        url=https://dietpi.com/downloads/images/DietPi_RPi-ARMv8-Bookworm.img.xz
+        url=https://dietpi.com/downloads/images/DietPi_RPi234-ARMv8-Bookworm.img.xz
+    ;;
+    "dietpi:rpi5_armv8_bookworm")
+        url=https://dietpi.com/downloads/images/DietPi_RPi5-ARMv8-Bookworm.img.xz
+    ;;
+    "dietpi:rpi_armv6_trixie")
+        url=https://dietpi.com/downloads/images/DietPi_RPi1-ARMv6-Trixie.img.xz
+    ;;
+    "dietpi:rpi_armv7_trixie")
+        url=https://dietpi.com/downloads/images/DietPi_RPi2-ARMv7-Trixie.img.xz
+    ;;
+    "dietpi:rpi_armv8_trixie")
+        url=https://dietpi.com/downloads/images/DietPi_RPi234-ARMv8-Trixie.img.xz
+    ;;
+    "dietpi:rpi5_armv8_trixie")
+        url=https://dietpi.com/downloads/images/DietPi_RPi5-ARMv8-Trixie.img.xz
+    ;;
+    "dietpi:rpi_armv6_forky")
+        url=https://dietpi.com/downloads/images/DietPi_RPi1-ARMv6-Forky.img.xz
+    ;;
+    "dietpi:rpi_armv7_forky")
+        url=https://dietpi.com/downloads/images/DietPi_RPi2-ARMv7-Forky.img.xz
+    ;;
+    "dietpi:rpi_armv8_forky")
+        url=https://dietpi.com/downloads/images/DietPi_RPi234-ARMv8-Forky.img.xz
+    ;;
+    "dietpi:rpi5_armv8_forky")
+        url=https://dietpi.com/downloads/images/DietPi_RPi5-ARMv8-Forky.img.xz
     ;;
     "raspi_1_bullseye:20220121")
         url=https://raspi.debian.net/tested/20220121_raspi_1_bullseye.img.xz
