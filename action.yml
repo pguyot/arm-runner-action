@@ -21,6 +21,15 @@ inputs:
     description: 'Path to cpu info file to be mounted on /proc/cpuinfo'
     required: false
     default: ''
+  extra_files_path:
+    description: 'Extra files to copy to the image'
+    required: false
+  extra_files_mnt_path:
+    description: 'Where to copy extra files to in the image'
+    required: false
+  non_image_commands:
+    description: 'Commands to run outside the image, executed with /bin/sh'
+    required: false
   commands:
     description: 'Commands to run in the image, executed with /bin/sh'
     required: true
@@ -152,12 +161,36 @@ runs:
         sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-arm1 /usr/bin/qemu-arm-static0 --magic '\x7f\x45\x4c\x46\x01\x01\x01\x00\x41\x49\x02\x00\x00\x00\x00\x00\x02\x00\x28\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
         sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-aarch64 /usr/bin/qemu-aarch64-static0 --magic '\x7f\x45\x4c\x46\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
         sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-aarch641 /usr/bin/qemu-aarch64-static0 --magic '\x7f\x45\x4c\x46\x02\x01\x01\x00\x41\x49\x02\x00\x00\x00\x00\x00\x02\x00\xb7\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
-
+    - name: Restore base image cache
+      id: cache_base_image
+      uses: actions/cache@v3
+      with:
+        path: /home/runner/work/cached_base_images
+        key: base-image-${{ inputs.base_image }}
     - name: Download base image
-      run: |
-        bash ${GITHUB_ACTION_PATH}/download_image.sh ${{ inputs.base_image }}
-      shell: bash
       id: download_image
+      run: |
+        set -e
+        CACHE_DIR="/home/runner/work/cached_base_images"
+        mkdir -p "$CACHE_DIR"
+        # Sanitize the base image name to create a valid filename.
+        BASE_IMAGE_FILENAME=$(echo "${{ inputs.base_image }}" | sed 's/[^a-zA-Z0-9_.-]/_/g').img
+        CACHE_IMAGE_PATH="$CACHE_DIR/$BASE_IMAGE_FILENAME"
+        if [ -f "$CACHE_IMAGE_PATH" ]; then
+          echo "Base image found in cache: $CACHE_IMAGE_PATH"
+          echo "image=$CACHE_IMAGE_PATH" >> "$GITHUB_OUTPUT"
+        else
+          echo "Downloading base image: ${{ inputs.base_image }}"
+          bash ${GITHUB_ACTION_PATH}/download_image.sh "${{ inputs.base_image }}"
+          # Read the last line starting with "image=" from GITHUB_OUTPUT to get the downloaded image path.
+          DOWNLOADED_IMAGE=$(grep '^image=' "$GITHUB_OUTPUT" | tail -n1 | cut -d'=' -f2)
+          if [ -z "$DOWNLOADED_IMAGE" ]; then
+            echo "Error: download_image.sh did not output a valid image path."
+            exit 1
+          fi
+          cp "$DOWNLOADED_IMAGE" "$CACHE_IMAGE_PATH"
+        fi
+      shell: bash
     - name: Mount and optionally resize image
       run: |
         sudo --preserve-env=GITHUB_OUTPUT bash ${GITHUB_ACTION_PATH}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }} ${{ inputs.use_systemd_nspawn }} ${{ inputs.rootpartition }} ${{ inputs.bootpartition }}
@@ -236,6 +269,24 @@ runs:
             sudo cp -Rp ${{ github.workspace }} ${{ steps.mount_image.outputs.mount }}${repository_path}
         ;;
         esac
+        if [ -n "${{ inputs.extra_files_path }}" ]; then
+          # Create target directory if needed
+          extra_files_mnt_path="${{ inputs.extra_files_mnt_path }}"
+          # Default to copying to root if not specified
+          if [ -z "$extra_files_mnt_path" ]; then
+            extra_files_mnt_path="/"
+          fi
+          
+          # Ensure path starts with a slash and doesn't have double slashes
+          extra_files_mnt_path=$(echo "/${extra_files_mnt_path}" | sed 's#^//*#/#')
+          
+          echo "Copying extra files from ${{ inputs.extra_files_path }} to ${{ steps.mount_image.outputs.mount }}${extra_files_mnt_path}"
+          sudo mkdir -p "${{ steps.mount_image.outputs.mount }}${extra_files_mnt_path}"
+          sudo cp -Rp ${{ inputs.extra_files_path }}/* "${{ steps.mount_image.outputs.mount }}${extra_files_mnt_path}/"
+          # List contents to verify copy
+          echo "Contents of ${{ steps.mount_image.outputs.mount }}${extra_files_mnt_path}:"
+          sudo ls -la "${{ steps.mount_image.outputs.mount }}${extra_files_mnt_path}"
+        fi
         if [ "${{ inputs.use_systemd_nspawn }}x" != "x" -a "${{ inputs.use_systemd_nspawn }}x" != "nox" ]; then
             chroot_script_dir=/scripts
             script_dir=${RUNNER_TEMP:-/home/actions/temp}/scripts

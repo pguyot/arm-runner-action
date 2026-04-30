@@ -72,6 +72,10 @@ deleted on cleanup.
 
 ### Inputs
 
+#### `non_image_commands`
+
+Commands to execute outside the image after the repo has been copied/mounted into the image, but before the image commands run. Optional.
+
 #### `commands`
 
 Commands to execute. Written to a script within the image. Required.
