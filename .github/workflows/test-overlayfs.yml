@@ -32,7 +32,10 @@ jobs:
       run: |
         set -euxo pipefail
         sudo apt-get update
-        sudo apt-get install -y cpio zstd file
+        # unmkinitramfs (from initramfs-tools-core) handles the
+        # early-microcode + main archive concatenation produced by
+        # mkinitramfs, which a plain cpio/zstd/gunzip cannot.
+        sudo apt-get install -y file initramfs-tools-core
 
         IMAGE="${{ steps.build_image.outputs.image }}"
         LOOP=$(sudo losetup --find --show --partscan "$IMAGE")
@@ -58,15 +61,9 @@ jobs:
         sudo cp "$BOOT_MNT/initrd.img" "$WORK/initrd.img"
         cd "$WORK"
         sudo file initrd.img
-        if sudo file initrd.img | grep -qi zstd; then
-            sudo zstd -dc initrd.img | sudo cpio -idm
-        elif sudo file initrd.img | grep -qi gzip; then
-            sudo gunzip -c initrd.img | sudo cpio -idm
-        else
-            sudo cpio -idm < initrd.img
-        fi
+        sudo unmkinitramfs initrd.img extracted
         # overlayroot ships init scripts under /scripts/*overlayroot*
-        sudo find . -path '*overlayroot*' | tee /tmp/overlayroot_files
+        sudo find extracted -path '*overlayroot*' | tee /tmp/overlayroot_files
         test -s /tmp/overlayroot_files
 
         cd /
