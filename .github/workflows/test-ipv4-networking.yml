@@ -33,7 +33,7 @@ jobs:
       run: |
           ping -c 1 github.com || echo "Cannot ping from GitHub Action"
           wget https://github.com/
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         base_image: ${{ matrix.image }}

@@ -15,7 +15,7 @@ jobs:
       matrix:
         runner: ["ubuntu-22.04", "ubuntu-24.04", "ubuntu-latest"]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         commands: |
