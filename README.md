@@ -200,9 +200,8 @@ from the target system.
 #### `cpu_info`
 
 Path to a fake cpu_info file to be used instead of `/proc/cpuinfo`. Default is
-to not fake the CPU. With older versions of qemu, including the one provided
-by ubuntu-latest as of this writing (ubuntu 22.04, qemu 6), `/proc/cpuinfo` is
-not intercepted and will report amd64 CPU of GitHub runner.
+to not fake the CPU. With older versions of qemu, `/proc/cpuinfo` is not
+intercepted and will report amd64 CPU of GitHub runner.
 
 Some software checks for features using `/proc/cpuinfo` and this option can be
 used to trick them. The path is relative to the action (to use pre-defined
@@ -229,8 +228,11 @@ default emulated CPU for 32 bits may not work and you should set `cpu` option
 to `cortex-a7`.
 
 qemu 8.2 and higher do intercept `/proc/cpuinfo` to report something related
-to the passed cpu option. So if you are running ubuntu-24.04 or if you install
-your own version of qemu-user-arm/aarch64, this option will be effectless.
+to the passed `cpu` option. So if you are running ubuntu-24.04 or if you install
+your own version of qemu-user-arm/aarch64, this option will not override
+`/proc/cpuinfo`; set `cpu` to the CPU you want qemu to report instead. For
+example, Raspberry Pi 4 should use `max:cortex-a72` with a 64-bit image, and
+Raspberry Pi 5 should use `cortex-a76` with a 64-bit image.
 
 #### `optimize_image`
 
