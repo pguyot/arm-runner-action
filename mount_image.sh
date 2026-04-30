@@ -19,6 +19,15 @@ else
     bootpartition=
 fi
 
+if [ $# -ge 6 ]; then
+
+    manual_partitions=$6
+else
+    manual_partitions=
+fi
+
+echo "inside mount_image manual_partitions=${manual_partitions}"
+
 if [ ${additional_mb} -gt 0 ]; then
     dd if=/dev/zero bs=1M count=${additional_mb} >> ${image}
 fi
@@ -27,15 +36,6 @@ loopdev=$(losetup --find --show --partscan ${image})
 echo "Created loopback device ${loopdev}"
 echo "loopdev=${loopdev}" >> "$GITHUB_OUTPUT"
 
-if [ ${additional_mb} -gt 0 ]; then
-    if ( (parted --script $loopdev print || false) | grep "Partition Table: gpt" > /dev/null); then
-        sgdisk -e "${loopdev}"
-    fi
-    parted --script "${loopdev}" resizepart ${rootpartition} 100%
-    e2fsck -p -f "${loopdev}p${rootpartition}"
-    resize2fs "${loopdev}p${rootpartition}"
-    echo "Finished resizing disk image."
-fi
 
 waitForFile() {
     maxRetries=60
@@ -53,12 +53,42 @@ waitForFile() {
 
 sync
 partprobe -s "${loopdev}"
+
+# manual partitions making
+if [ "x$manual_partitions" = "xyes" -o "x$manual_partitions" = "xtrue" ]; then
+    echo "Creating manual partitions"
+    partitions=$(lsblk --raw --output "MAJ:MIN" --noheadings ${loopdev} | tail -n +2)
+    counter=1
+    for i in $partitions; do
+        MAJ=$(echo $i | cut -d: -f1)
+        MIN=$(echo $i | cut -d: -f2)
+        if [ ! -e "${loopdev}p${counter}" ]; then mknod ${loopdev}p${counter} b $MAJ $MIN; fi
+        counter=$((counter + 1))
+    done
+
+        
+
+fi
+
+
 if [ "x$bootpartition" != "x" ]; then
     bootdev=$(waitForFile "${loopdev}p${bootpartition}")
 else
     bootdev=
 fi
+
 rootdev=$(waitForFile "${loopdev}p${rootpartition}")
+
+
+if [ ${additional_mb} -gt 0 ]; then
+    if ( (parted --script $loopdev print || false) | grep "Partition Table: gpt" > /dev/null); then
+        sgdisk -e "${loopdev}"
+    fi
+    parted --script "${loopdev}" resizepart ${rootpartition} 100%
+    e2fsck -p -f "${loopdev}p${rootpartition}"
+    resize2fs "${loopdev}p${rootpartition}"
+    echo "Finished resizing disk image."
+fi
 
 # Mount the image
 mount=${RUNNER_TEMP:-/home/actions/temp}/arm-runner/mnt

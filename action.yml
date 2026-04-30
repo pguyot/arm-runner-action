@@ -88,6 +88,10 @@ inputs:
     description: 'Exports $GITHUB_ENV from the image environment to subsequent tasks'
     required: false
     default: 'no'
+  manual_partitions:
+    description: 'for docker, this option is required to manually set the partitions'
+    required: false
+    default: 'false'
 outputs:
   image:
     description: "Path to image"
@@ -160,7 +164,7 @@ runs:
       id: download_image
     - name: Mount and optionally resize image
       run: |
-        sudo --preserve-env=GITHUB_OUTPUT bash ${GITHUB_ACTION_PATH}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }} ${{ inputs.use_systemd_nspawn }} ${{ inputs.rootpartition }} ${{ inputs.bootpartition }}
+        sudo --preserve-env=GITHUB_OUTPUT bash ${GITHUB_ACTION_PATH}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }} ${{ inputs.use_systemd_nspawn }} ${{ inputs.rootpartition }} ${{ inputs.bootpartition }} ${{ inputs.manual_partitions }}
       shell: bash
       id: mount_image
     - name: Mount CPU info
