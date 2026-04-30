@@ -1,0 +1,32 @@
+name: Test on ARM host
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+      - 'w18/arm'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  aarch64:
+    runs-on: ubuntu-24.04-arm
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        base_image: https://dietpi.com/downloads/images/DietPi_RPi5-ARMv8-Bookworm.img.xz
+        cpu: cortex-a76
+        commands: |
+            echo "Running on ARM host"
+            test `uname -m` = 'aarch64'
+  armv7l:
+    runs-on: ubuntu-24.04-arm
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      with:
+        cpu: cortex-a8
+        commands: |
+            echo "Running on ARM host"
+            test `uname -m` = 'armv7l'
