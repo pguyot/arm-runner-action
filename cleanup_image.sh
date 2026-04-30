@@ -7,10 +7,14 @@ image=$3
 optimize=$4
 rootpartition=$5
 
-rm "${mount}/usr/bin/qemu-arm-static0"
-rm "${mount}/usr/bin/qemu-arm-static"
-rm "${mount}/usr/bin/qemu-aarch64-static0"
-rm "${mount}/usr/bin/qemu-aarch64-static"
+if [ -e "${mount}/usr/bin/qemu-arm-static0" ]; then
+    rm "${mount}/usr/bin/qemu-arm-static0"
+    rm "${mount}/usr/bin/qemu-arm-static"
+fi
+if [ -e "${mount}/usr/bin/qemu-aarch64-static0" ]; then
+    rm "${mount}/usr/bin/qemu-aarch64-static0"
+    rm "${mount}/usr/bin/qemu-aarch64-static"
+fi
 [ -e "${mount}/etc/_ld.so.preload" ] && mv "${mount}/etc/_ld.so.preload" "${mount}/etc/ld.so.preload"
 [ -e "${mount}/etc/_resolv.conf" ] && mv "${mount}/etc/_resolv.conf" "${mount}/etc/resolv.conf"
 

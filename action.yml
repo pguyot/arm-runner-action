@@ -144,14 +144,32 @@ runs:
         esac
         arm_cpu=${cpu%:*}
         aarch64_cpu=${cpu#*:}
-        sudo gcc -static ${GITHUB_ACTION_PATH}/qemu-wrapper.c -DQEMU_CPU=${arm_cpu} -O3 -s -o /usr/bin/qemu-arm-static0
-        sudo gcc -static ${GITHUB_ACTION_PATH}/qemu-wrapper.c -DQEMU_CPU=${aarch64_cpu} -O3 -s -o /usr/bin/qemu-aarch64-static0
-        sudo update-binfmts --unimport qemu-arm || echo "warning: could not unimport qemu-arm"
-        sudo update-binfmts --unimport qemu-aarch64 || echo "warning: could not unimport qemu-aarch64"
-        sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-arm /usr/bin/qemu-arm-static0 --magic '\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
-        sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-arm1 /usr/bin/qemu-arm-static0 --magic '\x7f\x45\x4c\x46\x01\x01\x01\x00\x41\x49\x02\x00\x00\x00\x00\x00\x02\x00\x28\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
-        sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-aarch64 /usr/bin/qemu-aarch64-static0 --magic '\x7f\x45\x4c\x46\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
-        sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-aarch641 /usr/bin/qemu-aarch64-static0 --magic '\x7f\x45\x4c\x46\x02\x01\x01\x00\x41\x49\x02\x00\x00\x00\x00\x00\x02\x00\xb7\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
+        case "$(uname -m)" in
+        aarch64)
+            register_arm=yes
+            register_aarch64=no
+        ;;
+        armv6l|armv7l)
+            register_arm=no
+            register_aarch64=no
+        ;;
+        *)
+            register_arm=yes
+            register_aarch64=yes
+        ;;
+        esac
+        if [ "${register_arm}" = "yes" ]; then
+            sudo gcc -static ${GITHUB_ACTION_PATH}/qemu-wrapper.c -DQEMU_CPU=${arm_cpu} -O3 -s -o /usr/bin/qemu-arm-static0
+            sudo update-binfmts --unimport qemu-arm || echo "warning: could not unimport qemu-arm"
+            sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-arm /usr/bin/qemu-arm-static0 --magic '\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
+            sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-arm1 /usr/bin/qemu-arm-static0 --magic '\x7f\x45\x4c\x46\x01\x01\x01\x00\x41\x49\x02\x00\x00\x00\x00\x00\x02\x00\x28\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
+        fi
+        if [ "${register_aarch64}" = "yes" ]; then
+            sudo gcc -static ${GITHUB_ACTION_PATH}/qemu-wrapper.c -DQEMU_CPU=${aarch64_cpu} -O3 -s -o /usr/bin/qemu-aarch64-static0
+            sudo update-binfmts --unimport qemu-aarch64 || echo "warning: could not unimport qemu-aarch64"
+            sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-aarch64 /usr/bin/qemu-aarch64-static0 --magic '\x7f\x45\x4c\x46\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
+            sudo update-binfmts --package arm-runner-action --install arm-runner-action-qemu-aarch641 /usr/bin/qemu-aarch64-static0 --magic '\x7f\x45\x4c\x46\x02\x01\x01\x00\x41\x49\x02\x00\x00\x00\x00\x00\x02\x00\xb7\x00' --mask '\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff' --credentials yes --fix-binary yes
+        fi
 
     - name: Download base image
       run: |
@@ -321,14 +339,32 @@ runs:
       if: always()
       shell: bash
       run: |
-        sudo update-binfmts --package arm-runner-action --remove arm-runner-action-qemu-arm /usr/bin/qemu-arm-static0
-        sudo update-binfmts --package arm-runner-action --remove arm-runner-action-qemu-arm1 /usr/bin/qemu-arm-static0
-        sudo update-binfmts --package arm-runner-action --remove arm-runner-action-qemu-aarch64 /usr/bin/qemu-aarch64-static0
-        sudo update-binfmts --package arm-runner-action --remove arm-runner-action-qemu-aarch641 /usr/bin/qemu-aarch64-static0
-        sudo rm /usr/bin/qemu-arm-static0
-        sudo rm /usr/bin/qemu-aarch64-static0
-        sudo update-binfmts --import qemu-arm || echo "warning: could not import qemu-arm"
-        sudo update-binfmts --import qemu-aarch64 || echo "warning: could not import qemu-aarch64"
+        case "$(uname -m)" in
+        aarch64)
+            register_arm=yes
+            register_aarch64=no
+        ;;
+        armv6l|armv7l)
+            register_arm=no
+            register_aarch64=no
+        ;;
+        *)
+            register_arm=yes
+            register_aarch64=yes
+        ;;
+        esac
+        if [ "${register_arm}" = "yes" ]; then
+            sudo update-binfmts --package arm-runner-action --remove arm-runner-action-qemu-arm /usr/bin/qemu-arm-static0
+            sudo update-binfmts --package arm-runner-action --remove arm-runner-action-qemu-arm1 /usr/bin/qemu-arm-static0
+            sudo rm /usr/bin/qemu-arm-static0
+            sudo update-binfmts --import qemu-arm || echo "warning: could not import qemu-arm"
+        fi
+        if [ "${register_aarch64}" = "yes" ]; then
+            sudo update-binfmts --package arm-runner-action --remove arm-runner-action-qemu-aarch64 /usr/bin/qemu-aarch64-static0
+            sudo update-binfmts --package arm-runner-action --remove arm-runner-action-qemu-aarch641 /usr/bin/qemu-aarch64-static0
+            sudo rm /usr/bin/qemu-aarch64-static0
+            sudo update-binfmts --import qemu-aarch64 || echo "warning: could not import qemu-aarch64"
+        fi
 branding:
   icon: 'cpu'
   color: 'purple'
