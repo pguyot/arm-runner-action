@@ -88,6 +88,10 @@ inputs:
     description: 'Exports $GITHUB_ENV from the image environment to subsequent tasks'
     required: false
     default: 'no'
+  enable_overlayfs:
+    description: 'Enable Raspberry Pi OverlayFS root in the produced image (regenerates initramfs against the image kernel and updates cmdline.txt / config.txt)'
+    required: false
+    default: 'no'
 outputs:
   image:
     description: "Path to image"
@@ -295,6 +299,11 @@ runs:
         [ -f ${script_dir}/github_env.sh ] && \
             cat ${script_dir}/github_env.sh >> $GITHUB_ENV
         exit $rc
+      shell: bash
+    - name: Enable overlayfs
+      if: ${{ !cancelled() && steps.runcmd.conclusion == 'success' && (inputs.enable_overlayfs == 'yes' || inputs.enable_overlayfs == 'true') }}
+      run: |
+        sudo bash ${GITHUB_ACTION_PATH}/enable_overlayfs.sh ${{ steps.mount_image.outputs.mount }}
       shell: bash
     - name: Copy artifacts within image
       if: ${{ always() && !cancelled() && (inputs.copy_artifacts_on_fail == 'yes' || steps.runcmd.conclusion == 'success') }}
