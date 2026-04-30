@@ -322,6 +322,30 @@ environment.
 Note this parameter does not enable importing any contents written to
 `$GITHUB_ENV` ahead of running the commands. For that, use `import_github_env`.
 
+#### `enable_overlayfs`
+
+Enable Raspberry Pi OverlayFS (read-only root with tmpfs overlay) on the
+produced image. Default is `no`.
+
+Calling `raspi-config nonint do_overlayfs 0` from the `commands` block does
+not work on its own under qemu-user emulation: raspi-config invokes
+`update-initramfs -c -k "$(uname -r)"`, but `uname -r` reports the host
+kernel rather than the image kernel, so no initramfs is produced. The
+resulting image has `boot=overlay` in `cmdline.txt` but no
+`/boot/initrd.img`, and will not boot in overlay mode.
+
+When `enable_overlayfs` is set to `yes`, the action regenerates the
+initramfs against the image's actual kernel (detected from `/lib/modules`)
+after the `commands` step, places `/boot/initrd.img`, and ensures
+`cmdline.txt` and `config.txt` are configured for overlay boot. It is
+idempotent: it composes with `commands` that already invoke
+`raspi-config nonint do_overlayfs 0`.
+
+This option requires an image with the `overlayroot` package available
+(e.g. Raspberry Pi OS). See
+[overlayfs test](.github/workflows/test-overlayfs.yml) for a verified
+example.
+
 ### Outputs
 
 #### `image`

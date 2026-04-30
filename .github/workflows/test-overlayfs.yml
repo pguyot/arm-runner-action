@@ -1,0 +1,75 @@
+name: Test enable_overlayfs
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test_enable_overlayfs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: ./ # pguyot/arm-runner-action@HEAD
+      id: build_image
+      with:
+        base_image: raspios_lite:latest
+        # optimize_image shrinks the rootfs, which is unnecessary for this test.
+        optimize_image: 'no'
+        enable_overlayfs: 'yes'
+        commands: |
+            # raspi-config nonint do_overlayfs 0 fails to generate a working
+            # initramfs under qemu-user (uname -r returns the host kernel).
+            # enable_overlayfs runs after these commands and regenerates the
+            # initramfs against the image kernel; the test below verifies the
+            # produced image really is bootable in overlay mode.
+            sudo raspi-config nonint do_overlayfs 0
+
+    - name: Verify overlay configuration in produced image
+      run: |
+        set -euxo pipefail
+        sudo apt-get update
+        sudo apt-get install -y cpio zstd file
+
+        IMAGE="${{ steps.build_image.outputs.image }}"
+        LOOP=$(sudo losetup --find --show --partscan "$IMAGE")
+        sudo partprobe -s "$LOOP" || true
+
+        BOOT_MNT=$(mktemp -d)
+        sudo mount "${LOOP}p1" "$BOOT_MNT"
+
+        echo "::group::cmdline.txt"
+        sudo cat "$BOOT_MNT/cmdline.txt"
+        echo "::endgroup::"
+        sudo grep -q "boot=overlay" "$BOOT_MNT/cmdline.txt"
+
+        echo "::group::config.txt initramfs lines"
+        sudo grep -n "^initramfs" "$BOOT_MNT/config.txt" || true
+        echo "::endgroup::"
+        sudo grep -q "^initramfs initrd.img followkernel" "$BOOT_MNT/config.txt"
+
+        sudo test -s "$BOOT_MNT/initrd.img"
+        echo "initrd.img size: $(sudo stat -c %s "$BOOT_MNT/initrd.img") bytes"
+
+        WORK=$(mktemp -d)
+        sudo cp "$BOOT_MNT/initrd.img" "$WORK/initrd.img"
+        cd "$WORK"
+        sudo file initrd.img
+        if sudo file initrd.img | grep -qi zstd; then
+            sudo zstd -dc initrd.img | sudo cpio -idm
+        elif sudo file initrd.img | grep -qi gzip; then
+            sudo gunzip -c initrd.img | sudo cpio -idm
+        else
+            sudo cpio -idm < initrd.img
+        fi
+        # overlayroot ships init scripts under /scripts/*overlayroot*
+        sudo find . -path '*overlayroot*' | tee /tmp/overlayroot_files
+        test -s /tmp/overlayroot_files
+
+        cd /
+        sudo umount "$BOOT_MNT"
+        sudo losetup --detach "$LOOP"
+        sudo rm -rf "$WORK" "$BOOT_MNT"
