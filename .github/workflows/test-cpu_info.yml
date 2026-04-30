@@ -7,9 +7,14 @@ on:
   pull_request:
   workflow_dispatch:
 
+# The cpu_info bind-mount feature only takes effect with qemu < 8.2. Starting
+# with qemu 8.2 (ubuntu-24.04), qemu-user intercepts /proc/cpuinfo reads and
+# returns a synthesized cpuinfo from the -cpu option, bypassing the bind mount.
+# The cpu_info jobs below therefore pin to ubuntu-22.04. The qemu >= 8.2
+# emulation path is covered by test_cortex_a76 on ubuntu-24.04.
 jobs:
   test_zero_w:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
@@ -21,11 +26,12 @@ jobs:
             cat /proc/cpuinfo > cpuinfo.txt
     - name: Test content of cpuinfo
       run: |
+        cat cpuinfo.txt
         grep -c ARMv6 cpuinfo.txt
         grep -c "CPU architecture: 7" cpuinfo.txt
         grep -c 6769746875620000 cpuinfo.txt
   test_3b:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
@@ -37,11 +43,12 @@ jobs:
             cat /proc/cpuinfo > cpuinfo.txt
     - name: Test content of cpuinfo
       run: |
+        cat cpuinfo.txt
         grep -c ARMv7 cpuinfo.txt
         grep -c "CPU architecture: 7" cpuinfo.txt
         grep -c 676974687562003b cpuinfo.txt
   test_zero2_w:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
@@ -53,11 +60,12 @@ jobs:
             cat /proc/cpuinfo > cpuinfo.txt
     - name: Test content of cpuinfo
       run: |
+        cat cpuinfo.txt
         grep -c ARMv7 cpuinfo.txt
         grep -c "CPU architecture: 7" cpuinfo.txt
         grep -c 6769746875620002 cpuinfo.txt
   test_zero2_w_arm64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
@@ -70,10 +78,11 @@ jobs:
             cat /proc/cpuinfo > cpuinfo.txt
     - name: Test content of cpuinfo
       run: |
+        cat cpuinfo.txt
         grep -c "CPU architecture: 8" cpuinfo.txt
         grep -c 6769746875620002 cpuinfo.txt
   test_4b:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
@@ -89,7 +98,7 @@ jobs:
         grep -c "CPU architecture: 8" cpuinfo.txt
         grep -c 676974687562004b cpuinfo.txt
   test_5:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - uses: ./ # pguyot/arm-runner-action@HEAD
@@ -101,11 +110,12 @@ jobs:
             cat /proc/cpuinfo > cpuinfo.txt
     - name: Test content of cpuinfo
       run: |
+        cat cpuinfo.txt
         grep -c "CPU architecture: 8" cpuinfo.txt
         grep -c 6769746875620050 cpuinfo.txt
   test_cortex_a76:
-    # Ubuntu 24.04 comes with qemu >= 8.2 which does emulate /proc/cpuinfo
-    # on aarch64
+    # Ubuntu 24.04 ships qemu >= 8.2 which synthesizes /proc/cpuinfo from the
+    # -cpu option on aarch64. No cpu_info bind mount is used here.
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
@@ -113,9 +123,12 @@ jobs:
       with:
         bind_mount_repository: true
         cpu: cortex-a76
+        base_image: raspios_lite_arm64:latest
         commands: |
             cat /proc/cpuinfo > cpuinfo.txt
     - name: Test content of cpuinfo
       run: |
-        grep -c "model name	: ARMv8 Processor rev 0 (v8l)" cpuinfo.txt
+        cat cpuinfo.txt
+        grep -c "model name	: ARMv8 Processor rev . (v8l)" cpuinfo.txt
         grep -c "CPU architecture: 8" cpuinfo.txt
+        grep -c "CPU part.*0xd0b" cpuinfo.txt
