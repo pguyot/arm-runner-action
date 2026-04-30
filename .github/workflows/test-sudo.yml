@@ -15,4 +15,6 @@ jobs:
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         commands: |
+            echo 'pi ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/010_pi-nopasswd
+            sudo chmod 0440 /etc/sudoers.d/010_pi-nopasswd
             sudo -u pi /bin/bash -c 'sudo echo hello'
