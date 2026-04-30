@@ -15,7 +15,7 @@ jobs:
       run: |
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         base_image: https://developer.nvidia.com/embedded/L4T/r35_Release_v1.0/JP_SD_5.0.2_b231/Jetson_SD_Xavier_NX/JP502-xnx-sd-card-image-b231.zip

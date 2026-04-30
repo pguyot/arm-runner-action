@@ -16,7 +16,7 @@ jobs:
   test_zero_w:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         cpu_info: cpuinfo/raspberrypi_zero_w
@@ -33,7 +33,7 @@ jobs:
   test_3b:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         cpu_info: cpuinfo/raspberrypi_3b
@@ -50,7 +50,7 @@ jobs:
   test_zero2_w:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         cpu_info: cpuinfo/raspberrypi_zero2_w
@@ -67,7 +67,7 @@ jobs:
   test_zero2_w_arm64:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         cpu_info: cpuinfo/raspberrypi_zero2_w_arm64
@@ -84,7 +84,7 @@ jobs:
   test_4b:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         cpu_info: cpuinfo/raspberrypi_4b
@@ -100,7 +100,7 @@ jobs:
   test_5:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         cpu_info: cpuinfo/raspberrypi_5
@@ -118,7 +118,7 @@ jobs:
     # -cpu option on aarch64. No cpu_info bind mount is used here.
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         bind_mount_repository: true
