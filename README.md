@@ -101,6 +101,8 @@ The following values are allowed:
 -   `raspios_lite:2026-04-21`
 -   `raspios_lite:latest` (armhf build, *default*)
 -   `raspios_oldstable_lite:2023-05-03`
+-   `raspios_oldstable_lite:2025-05-07`
+-   `raspios_oldstable_lite:2026-04-14`
 -   `raspios_lite_arm64:2022-01-28` (arm64)
 -   `raspios_lite_arm64:2022-04-04` (arm64)
 -   `raspios_lite_arm64:2023-05-03` (arm64)

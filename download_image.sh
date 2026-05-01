@@ -56,6 +56,12 @@ case $1 in
     "raspios_oldstable_lite:2023-05-03")
         url=https://downloads.raspberrypi.org/raspios_oldstable_lite_armhf/images/raspios_oldstable_lite_armhf-2023-05-03/2023-05-03-raspios-buster-armhf-lite.img.xz
     ;;
+    "raspios_oldstable_lite:2025-05-07")
+        url=https://downloads.raspberrypi.com/raspios_oldstable_lite_armhf/images/raspios_oldstable_lite_armhf-2025-05-07/2025-05-06-raspios-bullseye-armhf-lite.img.xz
+    ;;
+    "raspios_oldstable_lite:2026-04-14")
+        url=https://downloads.raspberrypi.com/raspios_oldstable_lite_armhf/images/raspios_oldstable_lite_armhf-2026-04-14/2026-04-13-raspios-bookworm-armhf-lite.img.xz
+    ;;
     # RaspiOS lite arm64
     "raspios_lite_arm64:latest")
         url=https://downloads.raspberrypi.org/raspios_lite_arm64_latest
