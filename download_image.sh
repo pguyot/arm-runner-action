@@ -31,6 +31,27 @@ case $1 in
     "raspios_lite:2023-05-03")
         url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2023-05-03/2023-05-03-raspios-bullseye-armhf-lite.img.xz
     ;;
+    "raspios_lite:2023-12-11")
+        url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2023-12-11/2023-12-11-raspios-bookworm-armhf-lite.img.xz
+    ;;
+    "raspios_lite:2024-03-15")
+        url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2024-03-15/2024-03-15-raspios-bookworm-armhf-lite.img.xz
+    ;;
+    "raspios_lite:2024-07-04")
+        url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2024-07-04/2024-07-04-raspios-bookworm-armhf-lite.img.xz
+    ;;
+    "raspios_lite:2024-10-22")
+        url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2024-10-28/2024-10-22-raspios-bookworm-armhf-lite.img.xz
+    ;;
+    "raspios_lite:2025-05-13")
+        url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2025-05-13/2025-05-13-raspios-bookworm-armhf-lite.img.xz
+    ;;
+    "raspios_lite:2025-12-04")
+        url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2025-12-04/2025-12-04-raspios-trixie-armhf-lite.img.xz
+    ;;
+    "raspios_lite:2026-04-21")
+        url=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2026-04-21/2026-04-21-raspios-trixie-armhf-lite.img.xz
+    ;;
     # RaspiOS oldstable lite
     "raspios_oldstable_lite:2023-05-03")
         url=https://downloads.raspberrypi.org/raspios_oldstable_lite_armhf/images/raspios_oldstable_lite_armhf-2023-05-03/2023-05-03-raspios-buster-armhf-lite.img.xz
