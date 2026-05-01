@@ -114,6 +114,8 @@ The following values are allowed:
 -   `raspios_lite_arm64:2025-12-04` (arm64)
 -   `raspios_lite_arm64:2026-04-21` (arm64)
 -   `raspios_lite_arm64:latest` (arm64)
+-   `raspios_oldstable_lite_arm64:2025-05-07`
+-   `raspios_oldstable_lite_arm64:2026-04-14`
 -   `dietpi:rpi_armv6_bookworm`
 -   `dietpi:rpi_armv7_bookworm`
 -   `dietpi:rpi_armv8_bookworm` (arm64)

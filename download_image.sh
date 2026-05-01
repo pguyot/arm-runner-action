@@ -96,6 +96,13 @@ case $1 in
     "raspios_lite_arm64:2026-04-21")
         url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2026-04-21/2026-04-21-raspios-trixie-arm64-lite.img.xz
     ;;
+    # RaspiOS oldstable lite arm64
+    "raspios_oldstable_lite_arm64:2025-05-07")
+        url=https://downloads.raspberrypi.com/raspios_oldstable_lite_arm64/images/raspios_oldstable_lite_arm64-2025-05-07/2025-05-06-raspios-bullseye-arm64-lite.img.xz
+    ;;
+    "raspios_oldstable_lite_arm64:2026-04-14")
+        url=https://downloads.raspberrypi.com/raspios_oldstable_lite_arm64/images/raspios_oldstable_lite_arm64-2026-04-14/2026-04-13-raspios-bookworm-arm64-lite.img.xz
+    ;;
     # DietPi
     "dietpi:rpi_armv6_bookworm")
         url=https://dietpi.com/downloads/images/DietPi_RPi1-ARMv6-Bookworm.img.xz
