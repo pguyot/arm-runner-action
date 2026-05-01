@@ -75,6 +75,27 @@ case $1 in
     "raspios_lite_arm64:2023-05-03")
         url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2023-05-03/2023-05-03-raspios-bullseye-arm64-lite.img.xz
     ;;
+    "raspios_lite_arm64:2023-12-11")
+        url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2023-12-11/2023-12-11-raspios-bookworm-arm64-lite.img.xz
+    ;;
+    "raspios_lite_arm64:2024-03-15")
+        url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2024-03-15/2024-03-15-raspios-bookworm-arm64-lite.img.xz
+    ;;
+    "raspios_lite_arm64:2024-07-04")
+        url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64-lite.img.xz
+    ;;
+    "raspios_lite_arm64:2024-10-22")
+        url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2024-10-28/2024-10-22-raspios-bookworm-arm64-lite.img.xz
+    ;;
+    "raspios_lite_arm64:2025-05-13")
+        url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2025-05-13/2025-05-13-raspios-bookworm-arm64-lite.img.xz
+    ;;
+    "raspios_lite_arm64:2025-12-04")
+        url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2025-12-04/2025-12-04-raspios-trixie-arm64-lite.img.xz
+    ;;
+    "raspios_lite_arm64:2026-04-21")
+        url=https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2026-04-21/2026-04-21-raspios-trixie-arm64-lite.img.xz
+    ;;
     # DietPi
     "dietpi:rpi_armv6_bookworm")
         url=https://dietpi.com/downloads/images/DietPi_RPi1-ARMv6-Bookworm.img.xz
