@@ -92,12 +92,30 @@ The following values are allowed:
 -   `raspios_lite:2022-01-28`
 -   `raspios_lite:2022-04-04`
 -   `raspios_lite:2023-05-03`
+- `raspios_lite:2023-12-11`
+- `raspios_lite:2024-03-15`
+- `raspios_lite:2024-07-04`
+- `raspios_lite:2024-10-22`
+- `raspios_lite:2025-05-13`
+- `raspios_lite:2025-12-04`
+- `raspios_lite:2026-04-21`
 -   `raspios_lite:latest` (armhf build, *default*)
 -   `raspios_oldstable_lite:2023-05-03`
+- `raspios_oldstable_lite:2025-05-07`
+- `raspios_oldstable_lite:2026-04-14`
 -   `raspios_lite_arm64:2022-01-28` (arm64)
 -   `raspios_lite_arm64:2022-04-04` (arm64)
 -   `raspios_lite_arm64:2023-05-03` (arm64)
+- `raspios_lite_arm64:2023-12-11` (arm64)
+- `raspios_lite_arm64:2024-03-15` (arm64)
+- `raspios_lite_arm64:2024-07-04` (arm64)
+- `raspios_lite_arm64:2024-10-22` (arm64)
+- `raspios_lite_arm64:2025-05-13` (arm64)
+- `raspios_lite_arm64:2025-12-04` (arm64)
+- `raspios_lite_arm64:2026-04-21` (arm64)
 -   `raspios_lite_arm64:latest` (arm64)
+- `raspios_oldstable_lite_arm64:2025-05-07`
+- `raspios_oldstable_lite_arm64:2026-04-14`
 -   `dietpi:rpi_armv6_bookworm`
 -   `dietpi:rpi_armv7_bookworm`
 -   `dietpi:rpi_armv8_bookworm` (arm64)
