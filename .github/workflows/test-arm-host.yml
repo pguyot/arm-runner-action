@@ -12,7 +12,7 @@ jobs:
   aarch64:
     runs-on: ubuntu-24.04-arm
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         base_image: https://dietpi.com/downloads/images/DietPi_RPi5-ARMv8-Bookworm.img.xz
@@ -23,7 +23,7 @@ jobs:
   armv7l:
     runs-on: ubuntu-24.04-arm
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: ./ # pguyot/arm-runner-action@HEAD
       with:
         cpu: cortex-a8

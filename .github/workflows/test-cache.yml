@@ -11,7 +11,7 @@ jobs:
   test_cache:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: actions/cache@v5
       id: cache
       with:
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test_cache]
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: actions/cache@v5
       with:
         path: ${{ runner.temp }}/test_cache.img
