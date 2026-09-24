@@ -86,15 +86,17 @@ if [ -e /usr/bin/qemu-arm-static0 ]; then
     if [ -f '/usr/bin/qemu-arm-static' ]; then
         cp /usr/bin/qemu-arm-static ${mount}/usr/bin/
     else
-        cp /usr/bin/qemu-arm ${mount}/usr/bin/
+        # Copy to qemu-arm-static, as this is what qemu-wrapper.c/qemu-arm-static0 uses
+        cp /usr/bin/qemu-arm ${mount}/usr/bin/qemu-arm-static
     fi
 fi
 if [ -e /usr/bin/qemu-aarch64-static0 ]; then
     cp /usr/bin/qemu-aarch64-static0 ${mount}/usr/bin/qemu-aarch64-static0
-    if [ -f '/usr/bin/qemu-arm-static' ]; then
+    if [ -f '/usr/bin/qemu-aarch64-static' ]; then
         cp /usr/bin/qemu-aarch64-static ${mount}/usr/bin/
     else
-        cp /usr/bin/qemu-aarch64 ${mount}/usr/bin/
+        # Copy to qemu-aarch64-static, as this is what qemu-wrapper.c/qemu-aarch64-static0 uses
+        cp /usr/bin/qemu-aarch64 ${mount}/usr/bin/qemu-aarch64-static
     fi
 fi
 if [ -e "${mount}/etc/ld.so.preload" ]; then
