@@ -19,8 +19,8 @@ else
     bootpartition=
 fi
 
-if [ ${additional_mb} -gt 0 ]; then
-    dd if=/dev/zero bs=1M count=${additional_mb} >> ${image}
+if [ "${additional_mb}" -gt 0 ]; then
+    dd if=/dev/zero bs=1M count="${additional_mb}" >> "${image}"
 fi
 
 loopdev=$(losetup --find --show --partscan ${image})
@@ -28,10 +28,10 @@ echo "Created loopback device ${loopdev}"
 echo "loopdev=${loopdev}" >> "$GITHUB_OUTPUT"
 
 if [ ${additional_mb} -gt 0 ]; then
-    if ( (parted --script $loopdev print || false) | grep "Partition Table: gpt" > /dev/null); then
+    if ( (parted --script "$loopdev" print || false) | grep "Partition Table: gpt" > /dev/null); then
         sgdisk -e "${loopdev}"
     fi
-    parted --script "${loopdev}" resizepart ${rootpartition} 100%
+    parted --script "${loopdev}" resizepart "${rootpartition}" 100%
     e2fsck -p -f "${loopdev}p${rootpartition}"
     resize2fs "${loopdev}p${rootpartition}"
     echo "Finished resizing disk image."
@@ -42,7 +42,7 @@ waitForFile() {
     retries=0
     until compgen -G "$1"; do
         retries=$((retries + 1))
-        if [ $retries -ge $maxRetries ] ; then
+        if [ "$retries" -ge "$maxRetries" ] ; then
             echo "Could not find $1 within $maxRetries seconds" >&2
             return 1
         fi
@@ -61,8 +61,8 @@ fi
 rootdev=$(waitForFile "${loopdev}p${rootpartition}")
 
 # Mount the image
-mount=${RUNNER_TEMP:-/home/actions/temp}/arm-runner/mnt
-mkdir -p ${mount}
+mount="${RUNNER_TEMP:-/home/actions/temp}/arm-runner/mnt"
+mkdir -p "${mount}"
 echo "mount=${mount}" >> "$GITHUB_OUTPUT"
 [ ! -d "${mount}" ] && mkdir "${mount}"
 mount "${rootdev}" "${mount}"
@@ -82,21 +82,21 @@ fi
 mv "${mount}/etc/resolv.conf" "${mount}/etc/_resolv.conf"
 cp /etc/resolv.conf "${mount}/etc/resolv.conf"
 if [ -e /usr/bin/qemu-arm-static0 ]; then
-    cp /usr/bin/qemu-arm-static0 ${mount}/usr/bin/qemu-arm-static0
+    cp /usr/bin/qemu-arm-static0 "${mount}/usr/bin/qemu-arm-static0"
     if [ -f '/usr/bin/qemu-arm-static' ]; then
-        cp /usr/bin/qemu-arm-static ${mount}/usr/bin/
+        cp /usr/bin/qemu-arm-static "${mount}/usr/bin/"
     else
         # Copy to qemu-arm-static, as this is what qemu-wrapper.c/qemu-arm-static0 uses
-        cp /usr/bin/qemu-arm ${mount}/usr/bin/qemu-arm-static
+        cp /usr/bin/qemu-arm "${mount}/usr/bin/qemu-arm-static"
     fi
 fi
 if [ -e /usr/bin/qemu-aarch64-static0 ]; then
-    cp /usr/bin/qemu-aarch64-static0 ${mount}/usr/bin/qemu-aarch64-static0
+    cp /usr/bin/qemu-aarch64-static0 "${mount}/usr/bin/qemu-aarch64-static0"
     if [ -f '/usr/bin/qemu-aarch64-static' ]; then
-        cp /usr/bin/qemu-aarch64-static ${mount}/usr/bin/
+        cp /usr/bin/qemu-aarch64-static "${mount}/usr/bin/"
     else
         # Copy to qemu-aarch64-static, as this is what qemu-wrapper.c/qemu-aarch64-static0 uses
-        cp /usr/bin/qemu-aarch64 ${mount}/usr/bin/qemu-aarch64-static
+        cp /usr/bin/qemu-aarch64 "${mount}/usr/bin/qemu-aarch64-static"
     fi
 fi
 if [ -e "${mount}/etc/ld.so.preload" ]; then
