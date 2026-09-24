@@ -40,7 +40,7 @@ fi
 waitForFile() {
     maxRetries=60
     retries=0
-    until [ -n "$(compgen -G "$1")" ] ; do
+    until compgen -G "$1"; do
         retries=$((retries + 1))
         if [ $retries -ge $maxRetries ] ; then
             echo "Could not find $1 within $maxRetries seconds" >&2
@@ -48,11 +48,11 @@ waitForFile() {
         fi
         sleep 1
     done
-    compgen -G "$1"
 }
 
 sync
 partprobe -s "${loopdev}"
+sleep 0.1
 if [ "x$bootpartition" != "x" ]; then
     bootdev=$(waitForFile "${loopdev}p${bootpartition}")
 else
