@@ -130,6 +130,9 @@ runs:
     - name: Install qemu wrapper
       shell: bash
       run: |
+        case "${{ inputs.debug }}" in
+            yes|true) set -x;;
+        esac
         case ${{ inputs.cpu }} in
         "")
             cpu="arm1176:cortex-a53"
@@ -189,8 +192,8 @@ runs:
     - name: Mount and optionally resize image
       run: |
         case "${{ inputs.debug }}" in
-          yes|true) debug='-x';;
-          *) debug='';;
+            yes|true) debug='-x';;
+            *) debug='';;
         esac
         sudo --preserve-env=GITHUB_OUTPUT bash $debug ${GITHUB_ACTION_PATH}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }} ${{ inputs.use_systemd_nspawn }} ${{ inputs.rootpartition }} ${{ inputs.bootpartition }}
       shell: bash
