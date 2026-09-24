@@ -188,7 +188,11 @@ runs:
       id: download_image
     - name: Mount and optionally resize image
       run: |
-        sudo --preserve-env=GITHUB_OUTPUT bash ${GITHUB_ACTION_PATH}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }} ${{ inputs.use_systemd_nspawn }} ${{ inputs.rootpartition }} ${{ inputs.bootpartition }}
+        case "${{ inputs.debug }}" in
+          yes|true) debug='-x';;
+          *) debug='';;
+        esac
+        sudo --preserve-env=GITHUB_OUTPUT bash $debug ${GITHUB_ACTION_PATH}/mount_image.sh ${{ steps.download_image.outputs.image }} ${{ inputs.image_additional_mb }} ${{ inputs.use_systemd_nspawn }} ${{ inputs.rootpartition }} ${{ inputs.bootpartition }}
       shell: bash
       id: mount_image
     - name: Mount CPU info
