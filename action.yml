@@ -103,8 +103,10 @@ runs:
       run: |
         sudo apt-get update
         qemu_pkg=()
-        if ! test -x /usr/bin/qemu-arm-static || ! test -x /usr/bin/qemu-aarch64-static; then
-            apt-cache dump | grep -q '^Package: qemu-user-static$' && qemu_pkg=('qemu-user-static') || qemu_pkg=('qemu-user-binfmt')
+        if apt-cache dump | grep -q '^Package: qemu-user-static$'; then
+            test -x /usr/bin/qemu-arm-static && test -x /usr/bin/qemu-aarch64-static || qemu_pkg=('qemu-user-static')
+        else
+            test -x /usr/bin/qemu-arm && test -x /usr/bin/qemu-aarch64 || qemu_pkg=('qemu-user-binfmt')
         fi
         sudo apt-get install -y binfmt-support parted wget dosfstools zip "${qemu_pkg[@]}"
         if dpkg --compare-versions "$(dpkg-query -W -f '${Version}' e2fsprogs)" lt 1.47; then
@@ -265,11 +267,13 @@ runs:
         if [ "${{ inputs.use_systemd_nspawn }}x" != "x" -a "${{ inputs.use_systemd_nspawn }}x" != "nox" ]; then
             chroot_script_dir=/scripts
             script_dir=${RUNNER_TEMP:-/home/actions/temp}/scripts
+            mkdir -p "${script_dir}"
         else
             chroot_script_dir=/tmp
             script_dir=${{ steps.mount_image.outputs.mount }}/tmp
+            # /tmp might not have expected 1777 mode until systemd's default /tmp tmpfs is mounted
+            sudo chmod 1777 "${script_dir}"
         fi
-        mkdir -p ${script_dir}
         script_path=${script_dir}/commands.sh
         touch ${script_path}
         if [ "${debug}${exit_on_fail}" != "" ]; then
