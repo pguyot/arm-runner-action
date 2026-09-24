@@ -101,8 +101,12 @@ runs:
   steps:
     - name: Install dependencies
       run: |
-        sudo apt-get update && sudo apt-get install -y binfmt-support parted wget dosfstools zip
-        (test -x /usr/bin/qemu-arm-static && test -x /usr/bin/qemu-aarch64-static) || sudo apt install -y qemu-user-static
+        sudo apt-get update
+        qemu_pkg=()
+        if ! test -x /usr/bin/qemu-arm-static || ! test -x /usr/bin/qemu-aarch64-static; then
+            apt-cache dump | grep -q '^Package: qemu-user-static$' && qemu_pkg=('qemu-user-static') || qemu_pkg=('qemu-user-binfmt')
+        fi
+        sudo apt-get install -y binfmt-support parted wget dosfstools zip "${qemu_pkg[@]}"
         if dpkg --compare-versions "$(dpkg-query -W -f '${Version}' e2fsprogs)" lt 1.47; then
             # Install e2fsprogs 1.47
             e2fsprogs_build_dir="${RUNNER_TEMP:-/tmp}/arm-runner-e2fsprogs"
