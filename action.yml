@@ -278,8 +278,14 @@ runs:
         else
             chroot_script_dir=/tmp
             script_dir=${{ steps.mount_image.outputs.mount }}/tmp
-            # /tmp might not have expected 1777 mode until systemd's default /tmp tmpfs is mounted
-            sudo chmod 1777 "${script_dir}"
+            # /tmp might not have expected 1777 mode until systemd's default /tmp tmpfs is mounted.
+            # But error out, if it is a symlink, to guard against applying world-write mode to a dir on the host.
+            [ -L "${script_dir}" ] && { echo "ERROR: '${script_dir}' is a symlink, exiting for security reasons" >&2; exit 1; }
+            if [ -d "${script_dir}" ]; then
+                sudo chmod 1777 "${script_dir}"
+            else
+                sudo mkdir -m 1777 "${script_dir}"
+            fi
         fi
         script_path=${script_dir}/commands.sh
         touch ${script_path}
