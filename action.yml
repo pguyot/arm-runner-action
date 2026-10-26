@@ -103,11 +103,7 @@ runs:
       run: |
         sudo apt-get update
         qemu_pkg=()
-        if apt-cache dump | grep -q '^Package: qemu-user-static$'; then
-            test -x /usr/bin/qemu-arm-static && test -x /usr/bin/qemu-aarch64-static || qemu_pkg=('qemu-user-static')
-        else
-            test -x /usr/bin/qemu-arm && test -x /usr/bin/qemu-aarch64 || qemu_pkg=('qemu-user-binfmt')
-        fi
+        test -x /usr/bin/qemu-arm && test -x /usr/bin/qemu-aarch64 || qemu_pkg=('qemu-user-binfmt')
         sudo apt-get install -y binfmt-support parted wget dosfstools zip "${qemu_pkg[@]}"
         if dpkg --compare-versions "$(dpkg-query -W -f '${Version}' e2fsprogs)" lt 1.47; then
             # Install e2fsprogs 1.47
